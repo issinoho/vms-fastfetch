@@ -30,6 +30,10 @@ patched upstream tree (docs/DECISIONS.md D0). Read README.md first.
 ## Commands
 
 ```sh
+tools/build.sh <ia64|x86> [ALL|CLEAN]   # push + MMS build; fails on %CC-E/F, link errors
+tools/test.sh <node>                    # regression checks, "TEST: N passed, 0 failed"
+tools/run.sh <node> [args]              # interactive terminal session (colour, $QIO path)
+tools/gen_logos.py; tools/gen_mms.py    # regenerate committed logo_builtin.c / sources.mms
 tools/probe.sh <ia64|x86>               # push + run [.PROBES]PROBE.COM, log in out/
 tools/push.sh <node>                    # upload src/ vms/ probes/ (changed files; PUSH_ALL=1 for all)
 tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
@@ -39,6 +43,9 @@ tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
 
 - **Use `tools/vms.sh`, never raw `ssh host cmd`.** The exception is `ssh -tt`, which is
   needed to see real terminal behaviour (SYS$OUTPUT = FTAnnn:); wrap it in `timeout`.
+- **Terminal output differs from log output** (D10: `$QIO` NOFORMAT on terminals).
+  `tools/test.sh` covers only the log path; check terminal changes with `tools/run.sh`
+  on both nodes.
 - **Under vms.sh**, SYS$COMMAND and SYS$OUTPUT are disk files, and `isatty(1)` is 0.
 - **Never use `WAIT` in DCL run over ssh.**
 - **`PRODUCT` has no `/OUTPUT`**; use `DEFINE/USER SYS$OUTPUT file`.

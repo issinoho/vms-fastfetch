@@ -15,7 +15,7 @@ fastfetch reads /proc and sysfs.
 | Phase | IA64 (V8.4-2L3) | x86-64 (E9.2-4) |
 |-------|-----------------|-----------------|
 | 0. Scaffold and probes (`tools/probe.sh`) | done | done |
-| 1. Core engine + Title/OS/Host/Kernel/Uptime/Colors | – | – |
+| 1. Core engine + Title/OS/Host/Kernel/Uptime/Colors; `tools/test.sh` 21/21 | done | done |
 | 2. Tier-1 detections (CPU, Memory, Disk, LocalIp, Packages, Terminal, Cluster, …) | – | – |
 | 3. Config file and JSON compatibility | – | – |
 | 4. PCSI kit and release | – | – |
@@ -26,10 +26,24 @@ The probe findings that shape the detection code are in [docs/PROBES.md](docs/PR
 
 ```sh
 cp tools/nodes.conf.example tools/nodes.conf   # then fill in the real nodes
-tools/probe.sh <ia64|x86>                      # Phase 0 probes -> out/probes-<node>.log
-tools/push.sh <node>                           # upload src/, vms/, probes/ (changed files only)
+tools/build.sh <ia64|x86> [ALL|CLEAN]          # push and build with MMS -> [.BIN_<arch>]FASTFETCH.EXE
+tools/test.sh <node>                           # regression checks (log-file output)
+tools/run.sh <node> [args]                     # run in an interactive terminal session (colours, $QIO)
+tools/gen_logos.py                             # after changing src/logo/ (output committed)
+tools/gen_mms.py                               # after adding/removing sources (output committed)
+tools/probe.sh <node>                          # Phase 0 probes -> out/probes-<node>.log
 tools/vms.sh <node> dcl '<cmd>' ...            # run DCL; also put/get/run/batch
 ```
+
+On VMS, define a foreign command and run it:
+
+```
+$ fastfetch :== $DISK$USER:[USERNAME.VMS_FASTFETCH.BIN_X86_64]FASTFETCH.EXE
+$ fastfetch
+$ fastfetch -s os:host:uptime -l vms_small
+```
+
+Options and module names are case-insensitive, because DCL upper-cases unquoted arguments.
 
 ## Layout
 
