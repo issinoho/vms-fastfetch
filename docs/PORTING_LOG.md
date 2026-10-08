@@ -27,3 +27,12 @@ One entry per build or run problem, newest last. Triage codes (as in the sibling
 | O | Every logo line began `ESC[31m ESC[0m ESC[34m` | The colour carried over from the previous line was restated before an immediate `$2` | Colours are emitted lazily, before the next visible character |
 | S | `ssh -tt host "mcr …"` lost the end of the output (IA64: all of it) | A one-shot ssh session closes before the pseudo-terminal drains | `tools/run.sh` types the commands into a full interactive session and cuts out the output between markers |
 | S | In that session the typed commands were ignored | LOGINOUT flushes typeahead, and IA64's LOGIN.COM takes several seconds | Wait for the login to finish before typing (`RUN_LOGIN_WAIT`, default 12 s) |
+
+## Phase 2 (2026-10-08)
+
+| Code | Problem | Root cause | Fix |
+|------|---------|------------|-----|
+| T | No way to name the x86 CPU | No `$GETSYI` item, and VSI C has no inline assembly or CPUID builtin | One clang-compiled file, `src/vms/cpuid_x86.c` (D11) |
+| T | Host test build failed to link `ffX86Cpuid` | The WSL host is x86-64 too, so `#ifdef __x86_64` matched there | Guard with `__VMS && __x86_64` |
+| T | 15 undefined `ffPrint*` symbols at link time | Editing `tools/gen_mms.py` from Windows dropped its execute bit; the generator never ran, and a `&&` chain hid that | Run tools as `python3 tools/x.py` / `bash tools/x.sh` (CLAUDE.md) |
+| – | Packages makes up most of the run time | `LIB$SPAWN` of PRODUCT: 0.45 s on x86, 0.26 s on IA64 (the whole banner is 0.52 s / 0.21 s) | Accepted (D5); a cache is possible later |

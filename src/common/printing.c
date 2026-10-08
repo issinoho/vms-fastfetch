@@ -68,6 +68,44 @@ ffPrintError (const char *key, const char *error)
   ffAppendReset (line);
 }
 
+void
+ffAppendSize (FFstrbuf *sb, uint64_t bytes)
+{
+  static const char *units[] = { "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+  double v = (double) bytes;
+  int u = -1;
+
+  if (bytes < 1024)
+    {
+      ffStrbufAppendF (sb, "%lu B", (unsigned long) bytes);
+      return;
+    }
+  while (v >= 1024 && u < 5)
+    v /= 1024, u++;
+  ffStrbufAppendF (sb, "%.2f %s", v, units[u]);
+}
+
+void
+ffAppendPercent (FFstrbuf *sb, uint64_t part, uint64_t whole)
+{
+  unsigned pct = whole ? (unsigned) ((double) part * 100.0 / (double) whole + 0.5) : 0;
+
+  ffAppendColor (sb, pct < 50 ? "32" : pct < 80 ? "33" : "31");
+  ffStrbufAppendF (sb, "%u%%", pct);
+  ffAppendReset (sb);
+}
+
+void
+ffAppendUsage (FFstrbuf *sb, uint64_t used, uint64_t total)
+{
+  ffAppendSize (sb, used);
+  ffStrbufAppendS (sb, " / ");
+  ffAppendSize (sb, total);
+  ffStrbufAppendS (sb, " (");
+  ffAppendPercent (sb, used, total);
+  ffStrbufAppendC (sb, ')');
+}
+
 uint32_t
 ffVisibleWidth (const char *s, uint32_t len)
 {

@@ -16,7 +16,7 @@ fastfetch reads /proc and sysfs.
 |-------|-----------------|-----------------|
 | 0. Scaffold and probes (`tools/probe.sh`) | done | done |
 | 1. Core engine + Title/OS/Host/Kernel/Uptime/Colors; `tools/test.sh` 21/21 | done | done |
-| 2. Tier-1 detections (CPU, Memory, Disk, LocalIp, Packages, Terminal, Cluster, …) | – | – |
+| 2. CPU, Memory, Page file, Disk, LocalIp, Packages, Shell, Terminal, Processes, Users, Locale, DateTime, Version, Cluster; `tools/test.sh` 38/38 | done | done |
 | 3. Config file and JSON compatibility | – | – |
 | 4. PCSI kit and release | – | – |
 
@@ -29,8 +29,8 @@ cp tools/nodes.conf.example tools/nodes.conf   # then fill in the real nodes
 tools/build.sh <ia64|x86> [ALL|CLEAN]          # push and build with MMS -> [.BIN_<arch>]FASTFETCH.EXE
 tools/test.sh <node>                           # regression checks (log-file output)
 tools/run.sh <node> [args]                     # run in an interactive terminal session (colours, $QIO)
-tools/gen_logos.py                             # after changing src/logo/ (output committed)
-tools/gen_mms.py                               # after adding/removing sources (output committed)
+python3 tools/gen_logos.py                     # after changing src/logo/ (output committed)
+python3 tools/gen_mms.py                       # after adding/removing sources (output committed)
 tools/probe.sh <node>                          # Phase 0 probes -> out/probes-<node>.log
 tools/vms.sh <node> dcl '<cmd>' ...            # run DCL; also put/get/run/batch
 ```

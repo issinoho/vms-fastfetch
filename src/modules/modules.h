@@ -30,6 +30,21 @@ void ffPrintKernel (void);
 void ffPrintUptime (void);
 void ffPrintBreak (void);
 void ffPrintColors (void);
+void ffPrintCPU (void);
+void ffPrintMemory (void);
+void ffPrintSwap (void);
+void ffPrintDisk (void);
+void ffPrintPackages (void);
+void ffPrintShell (void);
+void ffPrintTerminal (void);
+void ffPrintTerminalSize (void);
+void ffPrintLocalIp (void);
+void ffPrintLocale (void);
+void ffPrintProcesses (void);
+void ffPrintUsers (void);
+void ffPrintDateTime (void);
+void ffPrintVersion (void);
+void ffPrintCluster (void);
 
 /* Title text as printed (no colours): shared with Separator.  */
 void ffTitleText (FFstrbuf *out);

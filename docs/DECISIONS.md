@@ -66,14 +66,14 @@ On IA64 there are 82 `*.PCSI$DATABASE` files but only 55 installed products. Spa
 VSI C 7.4 on IA64 warns `UNSUPCONVSPEC` on it. Use `%lu` with a cast; `PRIu64` from `<inttypes.h>` works on both.
 
 ## D9. No `/MAIN=POSIX_EXIT`; exit with `EXIT_SUCCESS`/`EXIT_FAILURE`
-**Status:** proposed.
+**Status:** approved by the user (2026-10-08).
 
 Under `_POSIX_EXIT`, `exit(1)` becomes `%X35A00x9`, which has success severity, so DCL sees a failed run as a success. vms-gzip works around this with a GPL `vms_exit.c`. Without `POSIX_EXIT`, the CRTL defines `EXIT_FAILURE` as `%X10000002` (error, message inhibited), and `$STATUS` and `ON ERROR` work as they should in DCL. fastfetch only ever exits 0 or 1, so `main` returns `EXIT_SUCCESS` or `EXIT_FAILURE`.
 
 Verified in Phase 1: an unknown option exits with `$STATUS` `%X10000002` on both nodes.
 
 ## D10. Terminal output through `$QIO` with `IO$M_NOFORMAT`
-**Status:** proposed.
+**Status:** approved by the user (2026-10-08).
 
 The VMS terminal driver wraps lines at the terminal width, and it counts escape sequences as printable characters. With colour on, the Host line (`QEMU Standard PC (Q35 + ICH9, 2009)`, 41 visible characters plus 25 bytes of escapes beside a 30-column logo) was broken after "ICH9," on an 80-column ssh terminal.
 
@@ -82,3 +82,16 @@ When SYS$OUTPUT is a terminal, `ffPrintFinish` therefore assigns a channel to it
 **Alternatives rejected:**
 - Changing the user's terminal settings (`SET TERMINAL/NOWRAP`).
 - Truncating lines to fit the driver's count of the width.
+
+## D11. x86 CPUID through one clang-compiled file
+**Status:** proposed.
+
+On x86-64 no other source names the CPU model: `$GETSYI` has no item for it, `SHOW CPU/FULL` doesn't show it, and VSI C has neither inline assembly nor a CPUID builtin.
+- **The exception:** `src/vms/cpuid_x86.c` (one function, `ffX86Cpuid`) is compiled by BUILD.COM with VSI's clang (`SYS$SYSTEM:CLANG.EXE`, part of VSI C++, already on the build node). Everything else stays VSI C (D1).
+- **Linking:** VSI C passes its 32-bit pointer sign-extended, which is a valid 64-bit address.
+- **IA64:** needs no clang, because VSI C's `__getIndReg` builtin reads the CPUID registers.
+- **Without clang:** a kit built on a node without clang would need a fallback. That is not needed here; the binary kit (Phase 4) is built on our node.
+
+**Alternatives rejected:**
+- VSI's X86ASM assembler: another toolchain and syntax for six instructions.
+- Showing only "x86-64": loses the most-wanted line of the banner.

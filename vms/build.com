@@ -26,7 +26,35 @@ $ if target .eqs. "" then target = "ALL"
 $ write sys$output "BUILD: ''target' for ''arch' in ''f$environment("DEFAULT")'"
 $ mmsq = ""
 $ if p2 .eqs. "KEEP_GOING" then mmsq = "/IGNORE=ERROR"
-$ mms/description=[.vms]descrip.mms/macro=("ARCH=''arch'")'mmsq' 'target'
+$ macros = "ARCH=''arch'"
+$ if arch .nes. "X86_64" .or. target .eqs. "CLEAN" then goto mms
+$!
+$! x86-64: VSI C cannot emit CPUID, so cpuid_x86.c is compiled with VSI's
+$! clang (D11) when its object is missing or older than the source.
+$ macros = macros + """,""X86=1"
+$ cpuobj = "[.OBJ_X86_64]cpuid_x86.obj"
+$ cpusrc = "[.src.vms]cpuid_x86.c"
+$ if f$search(cpuobj) .nes. ""
+$ then
+$   if f$cvtime(f$file_attributes(cpusrc,"RDT")) .les. -
+       f$cvtime(f$file_attributes(cpuobj,"RDT")) then goto mms
+$ endif
+$ write sys$output "CLANG ''cpusrc'"
+$ clang = "$sys$system:clang.exe"
+$ set default [.src.vms]
+$ define/user sys$error sys$output
+$ clang -c -O2 -o cpuid_x86.obj cpuid_x86.c
+$ cstatus = $status
+$ set default [--]
+$ if .not. cstatus
+$ then
+$   write sys$output "%CC-E-CLANG, clang failed on ''cpusrc'"
+$   status = cstatus
+$   goto done
+$ endif
+$ rename/nolog [.src.vms]cpuid_x86.obj 'cpuobj'
+$mms:
+$ mms/description=[.vms]descrip.mms/macro=("''macros'")'mmsq' 'target'
 $ status = $status
 $ if status then write sys$output "BUILD: done"
 $done:

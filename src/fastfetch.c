@@ -204,7 +204,7 @@ runStructure (const char *structure)
       else if (m->print)
         m->print ();
       else
-        ffPrintError (m->name, "Not supported on this platform");
+        ffPrintError (m->name, m->description ? "Not implemented yet" : "Not supported on this platform");
       p += n;
       if (*p == ':')
         p++;

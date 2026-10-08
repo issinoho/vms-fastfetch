@@ -89,7 +89,19 @@ against.
   - On IA64 it gives 82, which does not match the 55 products, because the database keeps files for removed and superseded products.
   - So the file count is not reliable. Use the PRODUCT output; the producer column also allows a breakdown such as `70 (pcsi: VSI 50, ISSINOHO 18, …)`.
 
+## CPU identification (Phase 2, `probes/probe_cpu.com`)
+- **x86-64:** VSI C has no inline assembly or CPUID builtin, but VSI's clang (`SYS$SYSTEM:CLANG.EXE`, clang 10.0.1 from VSI C++ V10.1-3U1) compiles a one-function `cpuid` wrapper that links with VSI C objects and works (D11).
+  - Vendor `GenuineIntel`; brand `Intel(R) Celeron(R) J4005 CPU @ 2.00GHz`.
+  - Leaf 1 ECX bit 31 (hypervisor) is set, and leaf 0x40000000 has the signature `KVMKVMKVM`.
+  - Leaf 0x16 returns zeros under KVM, so the clock comes from the brand string.
+- **IA64:** `__getIndReg(_IA64_REG_INDR_CPUID, n)` from `<builtins.h>` works in VSI C.
+  - Registers 0 and 1 give `GenuineIntel`.
+  - Register 3 gives family 0x20 (32, the same as `SYI$_CPUTYPE`) and model 0: Montecito, the Itanium 2 9000 series.
+  - The clock comes from `HW_NAME` ("1.59GHz").
+- **`DVI$_ACPTYPE`:** 11 is F11V5 (ODS-5), confirmed with `F$GETDVI(…,"ACPTYPE")`.
+- **`<ttdef.h>`:** `TT$_VT100` = 96 … `TT$_VT500_SERIES` = 114, and `TT$_UNKNOWN` = 0.
+  - A full interactive login over ssh reports VT500 series, because LOGIN does `SET TERMINAL/INQUIRE`.
+  - A one-shot `ssh host command` session reports 0.
+
 ## Still open
-- **x86 CPU model name.** `$GETSYI` has none, VSI C's `<builtins.h>` has no CPUID builtin, and `SHOW CPU/FULL` shows no model. Options: a small x86 assembler routine (the VSI X86ASM kit is installed on the x86 node), or fall back to "x86-64 (2 CPUs, KVM guest)". Decide in Phase 2.
-- **IA64 CPU name:** map `CPUTYPE` 32 to an Itanium family name and parse the clock from `HW_NAME`.
-- **Real VT terminals:** `TT_DECCRT*` on an actual DECterm or VT emulator. Needs a hand test by the user in Phase 2.
+- **Real VT terminals and DECterm:** check the device prefix (TWA?) and type with the user's own terminals.

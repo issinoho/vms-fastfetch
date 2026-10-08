@@ -13,7 +13,10 @@
 #define FF_PROGRAM_VERSION "0.1.0"
 #define FF_UPSTREAM_VERSION "2.70.0"   /* the fastfetch release we follow */
 
-#define FF_DEFAULT_STRUCTURE "Title:Separator:OS:Host:Kernel:Uptime:Break:Colors"
+/* fastfetch's default, minus the modules OpenVMS cannot support, plus Cluster
+   (shown only on cluster members).  */
+#define FF_DEFAULT_STRUCTURE \
+  "Title:Separator:OS:Host:Kernel:Uptime:Cluster:Packages:Shell:Terminal:CPU:Memory:Swap:Disk:LocalIp:Locale:Break:Colors"
 
 typedef struct FFOptions
 {

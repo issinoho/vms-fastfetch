@@ -24,6 +24,9 @@ cases=(
   "linuxlogo|-l linux -s os"
   "uppercase|-S OS:UPTIME -L NONE"
   "badmodule|-s os:nosuchmodule -l none"
+  "session|-s processes:users:datetime:version -l none"
+  "cluster|-s cluster -l none"
+  "planned|-s cpuusage -l none --show-errors"
 )
 
 cmds=("ff = \"\$\" + f\$parse(\"$exe\")")
@@ -50,6 +53,8 @@ lines() { [ "$(section "$1" | wc -l)" -eq "$2" ]; }
 esc() { section "$1" | grep -aq $'\033'; }
 noesc() { ! esc "$1"; }
 first() { section "$1" | head -1 | grep -aqF -- "$2"; }
+# Lines in the default run, logo column stripped (it is 29 wide plus padding).
+grepdefault() { section default | sed -E 's/^.{29} *//' | grep -aqE -- "$1"; }
 
 check "default: title has @"            has default "@"
 check "default: OS line"                has default "OS: OpenVMS "
@@ -72,6 +77,24 @@ check "linuxlogo: 12 logo lines"        lines linuxlogo 12
 check "uppercase: options and modules"  lines uppercase 2
 check "badmodule: warning"              has badmodule "unknown module"
 check "badmodule: OS still printed"     has badmodule "OS: OpenVMS"
+# Phase 2 modules in the default layout
+check "default: Packages (pcsi)"        grepdefault 'Packages: [0-9]+ \(pcsi\)$'
+check "default: Shell DCL"              has default "Shell: DCL"
+check "default: CPU with count and GHz" grepdefault 'CPU: .+ \([0-9]+\) @ [0-9.]+ GHz$'
+check "default: Memory usage"           grepdefault 'Memory: [0-9.]+ [KMGT]iB / [0-9.]+ [KMGT]iB \([0-9]+%\)$'
+check "default: Page file"              has default "Page file: "
+check "default: system disk, ODS"       grepdefault 'Disk \([A-Z0-9_$]+\): .+ \([0-9]+%\) - ODS-[25]$'
+check "default: Local IP"               grepdefault 'Local IP \([A-Z]+[0-9]+\): [0-9.]+/[0-9]+$'
+check "default: Locale"                 has default "Locale: "
+check "default: no Terminal off a tty"  lacks default "Terminal:"
+check "default: no Cluster standalone"  lacks default "Cluster:"
+check "session: 4 lines"                lines session 4
+check "session: Processes"              has session "Processes: "
+check "session: Users"                  has session "Users: "
+check "session: Date & Time"            has session "Date & Time: 20"
+check "session: Version"                has session "Version: vms-fastfetch"
+check "cluster: hidden when standalone" lines cluster 0
+check "planned: not implemented yet"    has planned "CPUUsage: Not implemented yet"
 
 echo "TEST: $pass passed, $fail failed ($node)"
 [ "$fail" -eq 0 ]

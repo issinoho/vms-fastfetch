@@ -5,14 +5,25 @@ CC_QUAL = /NAMES=(AS_IS,SHORTENED)/FLOAT=IEEE_FLOAT/IEEE_MODE=DENORM_RESULTS/PRE
 OBJS = $(OBJ)list.OBJ, -
 	$(OBJ)printing.OBJ, -
 	$(OBJ)strbuf.OBJ, -
+	$(OBJ)cluster_vms.OBJ, -
+	$(OBJ)cpu_vms.OBJ, -
+	$(OBJ)disk_vms.OBJ, -
 	$(OBJ)host_vms.OBJ, -
 	$(OBJ)kernel_vms.OBJ, -
+	$(OBJ)localip_vms.OBJ, -
+	$(OBJ)memory_vms.OBJ, -
+	$(OBJ)packages_vms.OBJ, -
 	$(OBJ)platform_vms.OBJ, -
+	$(OBJ)processes_vms.OBJ, -
+	$(OBJ)shell_vms.OBJ, -
+	$(OBJ)terminal_vms.OBJ, -
 	$(OBJ)uptime_vms.OBJ, -
 	$(OBJ)fastfetch.OBJ, -
 	$(OBJ)logo.OBJ, -
 	$(OBJ)logo_builtin.OBJ, -
+	$(OBJ)hardware.OBJ, -
 	$(OBJ)modules.OBJ, -
+	$(OBJ)session.OBJ, -
 	$(OBJ)system.OBJ, -
 	$(OBJ)title.OBJ, -
 	$(OBJ)vmsapi.OBJ
@@ -35,14 +46,41 @@ $(OBJ)printing.OBJ : [.src.common]printing.c $(HDRS)
 $(OBJ)strbuf.OBJ : [.src.common]strbuf.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.common]strbuf.c
 
+$(OBJ)cluster_vms.OBJ : [.src.detection]cluster_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]cluster_vms.c
+
+$(OBJ)cpu_vms.OBJ : [.src.detection]cpu_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]cpu_vms.c
+
+$(OBJ)disk_vms.OBJ : [.src.detection]disk_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]disk_vms.c
+
 $(OBJ)host_vms.OBJ : [.src.detection]host_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]host_vms.c
 
 $(OBJ)kernel_vms.OBJ : [.src.detection]kernel_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]kernel_vms.c
 
+$(OBJ)localip_vms.OBJ : [.src.detection]localip_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]localip_vms.c
+
+$(OBJ)memory_vms.OBJ : [.src.detection]memory_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]memory_vms.c
+
+$(OBJ)packages_vms.OBJ : [.src.detection]packages_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]packages_vms.c
+
 $(OBJ)platform_vms.OBJ : [.src.detection]platform_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]platform_vms.c
+
+$(OBJ)processes_vms.OBJ : [.src.detection]processes_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]processes_vms.c
+
+$(OBJ)shell_vms.OBJ : [.src.detection]shell_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]shell_vms.c
+
+$(OBJ)terminal_vms.OBJ : [.src.detection]terminal_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]terminal_vms.c
 
 $(OBJ)uptime_vms.OBJ : [.src.detection]uptime_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]uptime_vms.c
@@ -56,8 +94,14 @@ $(OBJ)logo.OBJ : [.src.logo]logo.c $(HDRS)
 $(OBJ)logo_builtin.OBJ : [.src.logo]logo_builtin.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.logo]logo_builtin.c
 
+$(OBJ)hardware.OBJ : [.src.modules]hardware.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]hardware.c
+
 $(OBJ)modules.OBJ : [.src.modules]modules.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]modules.c
+
+$(OBJ)session.OBJ : [.src.modules]session.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]session.c
 
 $(OBJ)system.OBJ : [.src.modules]system.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]system.c

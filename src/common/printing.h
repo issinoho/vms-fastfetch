@@ -7,6 +7,8 @@
 #ifndef FF_PRINTING_H
 #define FF_PRINTING_H
 
+#include <stdint.h>
+
 #include "common/strbuf.h"
 
 /* SGR helpers; no-ops in pipe mode.  sgr is e.g. "1;34".  */
@@ -24,6 +26,14 @@ void ffPrintKV (const char *key, const char *value);
 
 /* A failed detection: hidden unless --show-errors.  */
 void ffPrintError (const char *key, const char *error);
+
+/* fastfetch's value styles: sizes in binary units with two decimals
+   ("7.09 GiB", "512 B"), and percentages coloured green below 50, yellow
+   below 80, red above ("45%").  */
+void ffAppendSize (FFstrbuf *sb, uint64_t bytes);
+void ffAppendPercent (FFstrbuf *sb, uint64_t part, uint64_t whole);
+/* "{used} / {total} ({percent})" */
+void ffAppendUsage (FFstrbuf *sb, uint64_t used, uint64_t total);
 
 /* Visible width of a string, skipping ESC [ ... final-byte sequences.  */
 uint32_t ffVisibleWidth (const char *s, uint32_t len);
