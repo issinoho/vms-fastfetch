@@ -21,7 +21,7 @@ $ fastfetch
  | | | | '_ \ / _ \ '_ \     OS: OpenVMS V8.4-2L3 IA64
  | |_| | |_) |  __/ | | |    Host: HP rx2660 (1.59GHz/6.0MB)
   \___/| .__/ \___|_| |_|    Kernel: OpenVMS V8.4-2L3
-       |_|                   Uptime: 7 days, 11 hours, 40 mins
+       |_|                   Uptime: 7 days, 12 hours, 3 mins
  __     ____  __ ____        Packages: 56 (pcsi)
  \ \   / /  \/  / ___|       Shell: DCL
   \ \ / /| |\/| \___ \       Terminal: FTA966: (pseudo-terminal) VT500 series
@@ -30,6 +30,8 @@ $ fastfetch
                              Page file: 0 B / 4.05 GiB (0%)
                              Disk (I64SYS): 10.57 GiB / 33.92 GiB (31%) - ODS-5
                              Local IP (WE1): 10.0.0.5/24
+                             DNS: 10.0.0.1
+                             Queues: 7 (1 batch, 6 output)
                              Locale: C (ENGLISH)
 ```
 
@@ -42,17 +44,19 @@ $ fastfetch
  | | | | '_ \ / _ \ '_ \     OS: OpenVMS E9.2-4 x86_64
  | |_| | |_) |  __/ | | |    Host: QEMU Standard PC (Q35 + ICH9, 2009)
   \___/| .__/ \___|_| |_|    Kernel: OpenVMS E9.2-4
-       |_|                   Uptime: 7 days, 17 hours, 42 mins
+       |_|                   Uptime: 7 days, 17 hours, 59 mins
  __     ____  __ ____        Packages: 71 (pcsi)
  \ \   / /  \/  / ___|       Shell: DCL
-  \ \ / /| |\/| \___ \       Terminal: FTA1944: (pseudo-terminal) VT500 series
+  \ \ / /| |\/| \___ \       Terminal: FTA1966: (pseudo-terminal) VT500 series
    \ V / | |  | |___) |      CPU: Intel(R) Celeron(R) J4005 (2) @ 2.00 GHz
-    \_/  |_|  |_|____/       Memory: 4.47 GiB / 7.10 GiB (63%)
+    \_/  |_|  |_|____/       Memory: 4.53 GiB / 7.10 GiB (64%)
                              Page file: 0 B / 472.88 MiB (0%)
                              Disk (X86SYS): 20.22 GiB / 21.46 GiB (94%) - ODS-5
-                             Disk (TOOLS): 408.37 MiB / 964.12 MiB (42%) - ODS-5
-                             Disk (SYSDUMP): 9.50 GiB / 16.00 GiB (59%) - ODS-5
+                             Disk (TOOLS): 408.38 MiB / 964.12 MiB (42%) - ODS-5
+                             Disk (SYSDUMP): 9.54 GiB / 16.00 GiB (60%) - ODS-5
                              Local IP (IE0): 10.0.0.6/24
+                             DNS: 10.0.0.1
+                             Queues: 4 (2 batch, 2 output), 2 jobs
                              Locale: C (ENGLISH)
 ```
 
