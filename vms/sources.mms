@@ -2,7 +2,10 @@
 
 CC_QUAL = /NAMES=(AS_IS,SHORTENED)/FLOAT=IEEE_FLOAT/IEEE_MODE=DENORM_RESULTS/PREFIX_LIBRARY_ENTRIES=ALL_ENTRIES/WARNINGS=(ERRORS=IMPLICITFUNC)
 
-OBJS = $(OBJ)list.OBJ, -
+OBJS = $(OBJ)yyjson.OBJ, -
+	$(OBJ)config.OBJ, -
+	$(OBJ)format.OBJ, -
+	$(OBJ)list.OBJ, -
 	$(OBJ)printing.OBJ, -
 	$(OBJ)strbuf.OBJ, -
 	$(OBJ)cluster_vms.OBJ, -
@@ -26,9 +29,13 @@ OBJS = $(OBJ)list.OBJ, -
 	$(OBJ)session.OBJ, -
 	$(OBJ)system.OBJ, -
 	$(OBJ)title.OBJ, -
+	$(OBJ)crtl_init.OBJ, -
 	$(OBJ)vmsapi.OBJ
 
-HDRS = [.src.common]list.h, -
+HDRS = [.src.3rdparty.yyjson]yyjson.h, -
+	[.src.common]config.h, -
+	[.src.common]format.h, -
+	[.src.common]list.h, -
 	[.src.common]printing.h, -
 	[.src.common]strbuf.h, -
 	[.src.detection]detection.h, -
@@ -36,6 +43,15 @@ HDRS = [.src.common]list.h, -
 	[.src.logo]logo.h, -
 	[.src.modules]modules.h, -
 	[.src.vms]vmsapi.h
+
+$(OBJ)yyjson.OBJ : [.src.3rdparty.yyjson]yyjson.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.3rdparty.yyjson]yyjson.c
+
+$(OBJ)config.OBJ : [.src.common]config.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.common]config.c
+
+$(OBJ)format.OBJ : [.src.common]format.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.common]format.c
 
 $(OBJ)list.OBJ : [.src.common]list.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.common]list.c
@@ -108,6 +124,9 @@ $(OBJ)system.OBJ : [.src.modules]system.c $(HDRS)
 
 $(OBJ)title.OBJ : [.src.modules]title.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]title.c
+
+$(OBJ)crtl_init.OBJ : [.src.vms]crtl_init.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.vms]crtl_init.c
 
 $(OBJ)vmsapi.OBJ : [.src.vms]vmsapi.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.vms]vmsapi.c

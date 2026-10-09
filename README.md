@@ -17,7 +17,7 @@ fastfetch reads /proc and sysfs.
 | 0. Scaffold and probes (`tools/probe.sh`) | done | done |
 | 1. Core engine + Title/OS/Host/Kernel/Uptime/Colors; `tools/test.sh` 21/21 | done | done |
 | 2. CPU, Memory, Page file, Disk, LocalIp, Packages, Shell, Terminal, Processes, Users, Locale, DateTime, Version, Cluster; `tools/test.sh` 38/38 | done | done |
-| 3. Config file and JSON compatibility | – | – |
+| 3. JSONC config, presets, format strings, `--format json`, `--gen-config`; `tools/test.sh` 68/68 | done | done |
 | 4. PCSI kit and release | – | – |
 
 The probe findings that shape the detection code are in [docs/PROBES.md](docs/PROBES.md).
@@ -44,6 +44,8 @@ $ fastfetch -s os:host:uptime -l vms_small
 ```
 
 Options and module names are case-insensitive, because DCL upper-cases unquoted arguments.
+fastfetch's config files, presets (`-c all`, `-c ci`), format strings and `--format json`
+work as upstream; see [docs/CONFIG.md](docs/CONFIG.md).
 
 ## Layout
 
@@ -52,6 +54,8 @@ Options and module names are case-insensitive, because DCL upper-cases unquoted 
 | `src/` | the program. `src/3rdparty/yyjson` is yyjson 0.13.0, unmodified. |
 | `vms/` | VMS build procedures, compiler flags, (later) kit and smoke test |
 | `probes/` | Phase 0 probe programs and `PROBE.COM` |
+| `presets/` | presets for `-c <name>` (`all`, `ci`) |
+| `tests/` | config files used by `tools/test.sh` |
 | `tools/` | host-side scripts (bash, run from WSL/Linux) |
 | `docs/` | decisions, probe results, development log |
 

@@ -28,9 +28,12 @@ int ffVmsGetTime (uint64_t *out);
 
 /* Terminal output (DECISIONS.md D10).  The terminal driver wraps at the
    terminal width counting escape sequences as printable, so coloured lines
-   break early.  When SYS$OUTPUT is a terminal, lines are written with
-   $QIOW IO$_WRITEVBLK|IO$M_NOFORMAT, which bypasses the driver's formatting.
-   ffVmsTermOpen returns false (use stdout) when SYS$OUTPUT is not a terminal.  */
+   break early.  When SYS$OUTPUT is a terminal, each line's text is written
+   with $QIOW IO$_WRITEVBLK|IO$M_NOFORMAT, which the driver does not count,
+   between two empty writes whose carriage control lets the driver frame the
+   line as it frames any record.  ffVmsTermWrite takes one line, without
+   line terminators.  ffVmsTermOpen returns false (use stdout) when
+   SYS$OUTPUT is not a terminal.  */
 bool ffVmsTermOpen (void);
 bool ffVmsTermWrite (const char *buf, uint32_t len);
 

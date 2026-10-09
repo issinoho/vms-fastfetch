@@ -19,6 +19,11 @@ typedef struct FFPlatformResult
   FFstrbuf userName;            /* JPI$_USERNAME */
   FFstrbuf hostName;            /* SYI$_NODENAME */
   FFstrbuf fqdn;                /* gethostname(): TCP/IP host.domain */
+  FFstrbuf homeDir;             /* SYS$LOGIN */
+  FFstrbuf exePath;             /* JPI$_IMAGNAME */
+  FFstrbuf cwd;                 /* current default directory */
+  uint64_t uic;                 /* JPI$_UIC */
+  uint64_t pid;                 /* JPI$_PID */
 } FFPlatformResult;
 
 typedef struct FFOSResult

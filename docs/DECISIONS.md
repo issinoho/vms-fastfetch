@@ -77,14 +77,19 @@ Verified in Phase 1: an unknown option exits with `$STATUS` `%X10000002` on both
 
 The VMS terminal driver wraps lines at the terminal width, and it counts escape sequences as printable characters. With colour on, the Host line (`QEMU Standard PC (Q35 + ICH9, 2009)`, 41 visible characters plus 25 bytes of escapes beside a 30-column logo) was broken after "ICH9," on an 80-column ssh terminal.
 
-When SYS$OUTPUT is a terminal, `ffPrintFinish` therefore assigns a channel to it and writes each line with `$QIOW IO$_WRITEVBLK|IO$M_NOFORMAT` plus an explicit CR LF. This bypasses the driver's wrap and formatting, and the terminal emulator wraps genuinely long lines itself, as on Unix. Files, mailboxes and pipes still go through `fputs` (D3). If a `$QIO` fails, output falls back to `stdout`.
+When SYS$OUTPUT is a terminal, `ffPrintFinish` therefore assigns a channel to it and writes each line's text with `$QIOW IO$_WRITEVBLK|IO$M_NOFORMAT`. This bypasses the driver's wrap and formatting, and the terminal emulator wraps genuinely long lines itself, as on Unix. Files, mailboxes and pipes still go through `fputs` (D3). If a `$QIO` fails, output falls back to `stdout`.
+
+**Amended in Phase 3 (an implementation detail; the decision is unchanged):** the line framing comes from the driver.
+- **Before:** the text carried its own CR LF. That gave a blank line before the banner, and the first line overwrote any message printed just before it.
+- **Why:** the driver frames records itself. It sends a line feed before a record only when the cursor is not already on a fresh line, and a carriage return after it.
+- **Now:** each line is a zero-length formatted write with FORTRAN carriage control `$` (new line), then the text with NOFORMAT, then a zero-length write with `+` (carriage return). The output is byte-for-byte the same as DCL's, in sessions, after config warnings and inside command procedures.
 
 **Alternatives rejected:**
 - Changing the user's terminal settings (`SET TERMINAL/NOWRAP`).
 - Truncating lines to fit the driver's count of the width.
 
 ## D11. x86 CPUID through one clang-compiled file
-**Status:** proposed.
+**Status:** approved by the user (2026-10-09).
 
 On x86-64 no other source names the CPU model: `$GETSYI` has no item for it, `SHOW CPU/FULL` doesn't show it, and VSI C has neither inline assembly nor a CPUID builtin.
 - **The exception:** `src/vms/cpuid_x86.c` (one function, `ffX86Cpuid`) is compiled by BUILD.COM with VSI's clang (`SYS$SYSTEM:CLANG.EXE`, part of VSI C++, already on the build node). Everything else stays VSI C (D1).
@@ -95,3 +100,29 @@ On x86-64 no other source names the CPU model: `$GETSYI` has no item for it, `SH
 **Alternatives rejected:**
 - VSI's X86ASM assembler: another toolchain and syntax for six instructions.
 - Showing only "x86-64": loses the most-wanted line of the banner.
+
+## D12. Config locations
+**Status:** approved by the user (2026-10-09).
+
+Search order when `-c` is not given:
+1. the logical name `FASTFETCH$CONFIG`;
+2. upstream's `~/.config/fastfetch/config.jsonc`, as `[<login>.^.config.fastfetch]config.jsonc` (ODS-5 `^.` for the leading dot);
+3. the VMS-style `SYS$LOGIN:FASTFETCH.JSONC`.
+
+Other `-c` forms:
+- `-c <name>` also tries `FASTFETCH$PRESETS:<name>.jsonc`, which the kit will define;
+- `-c none` loads nothing.
+
+Location 2 is built from SYS$LOGIN's translation (`USER$ROOT:[username]` → `USER$ROOT:[username.^.config.fastfetch]`). `SYS$LOGIN:[.x]` is not valid on these nodes, because SYS$LOGIN is a plain directory, not a rooted logical. `--gen-config` creates the directories.
+
+## D13. Typed module arguments drive both the text and the JSON output
+**Status:** proposed.
+
+Each module reports its result once, as a list of named, typed arguments in upstream's order:
+- **Types:** string, count, size, percent, GHz, boolean, plus pre-coloured text.
+- **Text output:** a format string over the list. Each module's default layout is itself a format string, so `--<module>-format` and config `format` replace it exactly as in fastfetch.
+- **`--format json`:** the same list, with camelCase names (`pretty-name` → `prettyName`) and typed values (bytes, numbers, booleans). Multi-instance modules (Disk, LocalIp) give an array.
+
+These names are close to, but not guaranteed identical to, upstream's JSON field names. Upstream builds JSON from separate C structures, and its JSON for OpenVMS would not exist anyway. Pre-coloured text (Title's coloured parts) is left out of the JSON.
+
+**Alternative rejected:** a hand-written JSON function per module, mirroring upstream's field names. That doubles each module's code and still differs wherever upstream's structures have no OpenVMS data.

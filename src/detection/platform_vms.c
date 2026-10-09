@@ -25,9 +25,23 @@ ffDetectPlatform (void)
   ffStrbufInit (&r.userName);
   ffStrbufInit (&r.hostName);
   ffStrbufInit (&r.fqdn);
+  ffStrbufInit (&r.homeDir);
+  ffStrbufInit (&r.exePath);
+  ffStrbufInit (&r.cwd);
 #ifdef __VMS
   ffVmsJpiStr (JPI$_USERNAME, &r.userName);
   ffVmsSyiStr (SYI$_NODENAME, &r.hostName);
+  ffVmsJpiStr (JPI$_IMAGNAME, &r.exePath);
+  ffVmsJpiU64 (JPI$_UIC, &r.uic);
+  ffVmsJpiU64 (JPI$_PID, &r.pid);
+  ffVmsTrnlnm ("SYS$LOGIN", &r.homeDir);
+  /* The CRTL's PATH is the current default directory, in VMS syntax.  */
+  ffVmsTrnlnm ("PATH", &r.cwd);
+#else
+  ffVmsTrnlnm ("USER", &r.userName);
+  ffVmsTrnlnm ("HOME", &r.homeDir);
+  ffVmsTrnlnm ("PWD", &r.cwd);
+  r.pid = (uint64_t) getpid ();
 #endif
   if (gethostname (host, sizeof host) == 0)
     {

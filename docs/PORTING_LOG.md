@@ -36,3 +36,12 @@ One entry per build or run problem, newest last. Triage codes (as in the sibling
 | T | Host test build failed to link `ffX86Cpuid` | The WSL host is x86-64 too, so `#ifdef __x86_64` matched there | Guard with `__VMS && __x86_64` |
 | T | 15 undefined `ffPrint*` symbols at link time | Editing `tools/gen_mms.py` from Windows dropped its execute bit; the generator never ran, and a `&&` chain hid that | Run tools as `python3 tools/x.py` / `bash tools/x.sh` (CLAUDE.md) |
 | – | Packages makes up most of the run time | `LIB$SPAWN` of PRODUCT: 0.45 s on x86, 0.26 s on IA64 (the whole banner is 0.52 s / 0.21 s) | Accepted (D5); a cache is possible later |
+
+## Phase 3 (2026-10-09)
+
+| Code | Problem | Root cause | Fix |
+|------|---------|------------|-----|
+| F | `SYS$LOGIN:[.^.config.fastfetch]` would not resolve | SYS$LOGIN is a plain directory (`USER$ROOT:[username]`), not a rooted logical, so RMS will not merge a relative directory onto it (vms-gzip noted the same) | Build the path from SYS$LOGIN's translation (D12) |
+| O | A config warning shared a line with the first banner line on a terminal | `warn()` wrote the prefix, message and newline as three stderr calls, so three records | Format the message first and write it with one call (D3) |
+| O | A blank line before the banner, and a message just before it was overwritten | The `$QIO` NOFORMAT text carried its own CR LF; the driver frames records itself, emitting LF only when the cursor is not on a fresh line | Frame each line with zero-length writes carrying FORTRAN carriage control `$` and `+` (D10, amended) |
+| – | `-s` drops a config's per-module keys and formats | As upstream: `-s` replaces the module list | Documented in CONFIG.md; tests check that the config's display settings still apply |

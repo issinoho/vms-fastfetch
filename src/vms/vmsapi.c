@@ -126,12 +126,31 @@ ffVmsTermOpen (void)
   return FF_VMS_OK (sys$assign (&d, &termChannel, 0, 0, 0));
 }
 
+/* A zero-length formatted write carrying only FORTRAN carriage control
+   (P4): the driver emits the right line feed or carriage return for where
+   it believes the cursor is, exactly as for a DCL or CRTL record.  */
+static int
+carriageControl (char fortran)
+{
+  unsigned short iosb[4];
+  char dummy = 0;
+  int st = sys$qiow (0, termChannel, IO$_WRITEVBLK, (void *) iosb, 0, 0, &dummy, 0, 0,
+                     (unsigned char) fortran, 0, 0);
+  return FF_VMS_OK (st) ? iosb[0] : st;
+}
+
 bool
 ffVmsTermWrite (const char *buf, uint32_t len)
 {
   unsigned short iosb[4];
   int st;
 
+  /* One line, framed like a record: "$" = new line before, nothing after;
+     the body with IO$M_NOFORMAT (not counted towards the wrap width);
+     "+" = nothing before, carriage return after.  Raw LF/CR in the body
+     instead gave blank or overwritten lines next to DCL and CRTL output.  */
+  if (!FF_VMS_OK (carriageControl ('$')))
+    return false;
   while (len > 0)
     {
       /* Stay well under the terminal driver's maximum buffer (MAXBUF).  */
@@ -145,7 +164,7 @@ ffVmsTermWrite (const char *buf, uint32_t len)
       buf += n;
       len -= n;
     }
-  return true;
+  return FF_VMS_OK (carriageControl ('+'));
 }
 
 bool

@@ -16,7 +16,7 @@ BIN = [.BIN_$(ARCH)]
 
 CC = CC
 ! Default /STANDARD (relaxed): C99 features plus the "$" in SYI$_ names.
-CFLAGS = $(CC_QUAL)/NOLIST/INCLUDE_DIRECTORY=("./src")
+CFLAGS = $(CC_QUAL)/NOLIST/INCLUDE_DIRECTORY=("./src","./src/3rdparty/yyjson")
 
 ! x86-64: CPUID comes from cpuid_x86.c, which BUILD.COM compiles with
 ! clang (D11) before running MMS.

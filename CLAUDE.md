@@ -43,6 +43,10 @@ tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
 
 - **Use `tools/vms.sh`, never raw `ssh host cmd`.** The exception is `ssh -tt`, which is
   needed to see real terminal behaviour (SYS$OUTPUT = FTAnnn:); wrap it in `timeout`.
+- **Every message is one write call.** On VMS each stderr/stdout call is a record, so
+  build the whole line first (config.c `warn`).
+- **Check terminal framing with raw bytes:** pipe an `ssh -tt` session through `cat -A`
+  (CRs kept). DCL's own records look like `^Mtext^M$`, and ours must match.
 - **Terminal output differs from log output** (D10: `$QIO` NOFORMAT on terminals).
   `tools/test.sh` covers only the log path; check terminal changes with `tools/run.sh`
   on both nodes.

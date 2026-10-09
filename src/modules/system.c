@@ -1,27 +1,48 @@
-/* system.c - OS, Host, Kernel and Uptime modules.  */
+/* system.c - OS, Host, Kernel and Uptime modules.
+
+   Argument lists follow fastfetch's, in order, so {N} formats carry over;
+   values OpenVMS does not have are empty.  */
+
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
 
 #include "common/printing.h"
 #include "detection/detection.h"
 #include "fastfetch.h"
 #include "modules/modules.h"
+#include "vms/vmsapi.h"
+
+#ifdef __VMS
+#include <syidef.h>
+#endif
 
 void
-ffPrintOS (void)
+ffPrintOS (const FFModuleArgs *m)
 {
   const FFOSResult *os = ffDetectOS ();
-  FFstrbuf *line = ffPrintKey ("OS");
+  FFformatarg args[] = {
+    ffArgS ("sysname", os->name.chars),
+    ffArgS ("name", os->name.chars),
+    ffArgS ("pretty-name", os->prettyName.chars),
+    ffArgS ("id", os->id.chars),
+    ffArgS ("id-like", ""),
+    ffArgS ("variant", ""),
+    ffArgS ("variant-id", ""),
+    ffArgS ("version", os->version.chars),
+    ffArgS ("version-id", os->version.chars),
+    ffArgS ("codename", ""),
+    ffArgS ("build-id", ""),
+    ffArgS ("arch", os->arch.chars),
+    ffArgS ("kernel-release", os->version.chars),
+  };
 
-  /* fastfetch's default OS format: "{pretty-name} {arch}".  */
-  ffStrbufAppend (line, &os->prettyName);
-  if (!ffStrbufIsEmpty (&os->arch))
-    {
-      ffStrbufAppendC (line, ' ');
-      ffStrbufAppend (line, &os->arch);
-    }
+  /* fastfetch's default: pretty name and architecture.  */
+  ffOutput (m, "OS", "{3}{?12} {12}{?}", sizeof args / sizeof args[0], args);
 }
 
 void
-ffPrintHost (void)
+ffPrintHost (const FFModuleArgs *m)
 {
   FFHostResult host;
   const char *error;
@@ -30,17 +51,29 @@ ffPrintHost (void)
   host.virtualMachine = false;
   error = ffDetectHost (&host);
   if (error)
-    ffPrintError ("Host", error);
+    ffOutputError (m, "Host", error);
   else
-    ffPrintKV ("Host", host.name.chars);
+    {
+      FFformatarg args[] = {
+        ffArgS ("family", ""),
+        ffArgS ("name", host.name.chars),
+        ffArgS ("version", ""),
+        ffArgS ("sku", ""),
+        ffArgS ("vendor", ""),
+        ffArgS ("serial", ""),
+        ffArgS ("uuid", ""),
+      };
+      ffOutput (m, "Host", "{2}", sizeof args / sizeof args[0], args);
+    }
   ffStrbufDestroy (&host.name);
 }
 
 void
-ffPrintKernel (void)
+ffPrintKernel (const FFModuleArgs *m)
 {
   FFKernelResult k;
   const char *error;
+  uint64_t pagesize = 0;
 
   ffStrbufInit (&k.sysname);
   ffStrbufInit (&k.release);
@@ -48,14 +81,22 @@ ffPrintKernel (void)
   ffStrbufInit (&k.machine);
   error = ffDetectKernel (&k);
   if (error)
-    ffPrintError ("Kernel", error);
+    ffOutputError (m, "Kernel", error);
   else
     {
-      /* fastfetch's default Kernel format: "{sysname} {release}".  */
-      FFstrbuf *line = ffPrintKey ("Kernel");
-      ffStrbufAppend (line, &k.sysname);
-      ffStrbufAppendC (line, ' ');
-      ffStrbufAppend (line, &k.release);
+#ifdef __VMS
+      ffVmsSyiU64 (SYI$_PAGE_SIZE, &pagesize);
+#endif
+      {
+        FFformatarg args[] = {
+          ffArgS ("sysname", k.sysname.chars),
+          ffArgS ("release", k.release.chars),
+          ffArgS ("version", k.version.chars),
+          ffArgS ("arch", k.machine.chars),
+          ffArgU ("page-size", pagesize),
+        };
+        ffOutput (m, "Kernel", "{1} {2}", sizeof args / sizeof args[0], args);
+      }
     }
   ffStrbufDestroy (&k.sysname);
   ffStrbufDestroy (&k.release);
@@ -74,45 +115,47 @@ appendUnit (FFstrbuf *sb, uint64_t n, const char *unit)
 }
 
 void
-ffPrintUptime (void)
+ffPrintUptime (const FFModuleArgs *m)
 {
   FFUptimeResult up;
   const char *error = ffDetectUptime (&up);
-  FFstrbuf value;
+  FFstrbuf formatted, boot;
   uint64_t s;
+  time_t bootUnix;
+  char buf[32];
 
   if (error)
     {
-      ffPrintError ("Uptime", error);
+      ffOutputError (m, "Uptime", error);
       return;
     }
   /* fastfetch: "6 days, 6 hours, 12 mins"; "N secs" under a minute.  */
   s = up.uptimeSeconds;
-  ffStrbufInit (&value);
-  appendUnit (&value, s / 86400, "day");
-  appendUnit (&value, s / 3600 % 24, "hour");
-  appendUnit (&value, s / 60 % 60, "min");
-  if (value.length == 0)
-    appendUnit (&value, s, "sec");
-  ffPrintKV ("Uptime", value.chars);
-  ffStrbufDestroy (&value);
-}
-
-void
-ffPrintColors (void)
-{
-  FFstrbuf *line;
-  int i;
-
-  /* Two rows of blocks, normal (40-47) and bright (100-107) backgrounds.  */
-  if (instance.options.pipe)
-    return;
-  line = ffPrintNewLine ();
-  for (i = 0; i < 8; i++)
-    ffStrbufAppendF (line, "\033[%dm   ", 40 + i);
-  ffStrbufAppendS (line, "\033[0m");
-  line = ffPrintNewLine ();
-  for (i = 0; i < 8; i++)
-    ffStrbufAppendF (line, "\033[%dm   ", 100 + i);
-  ffStrbufAppendS (line, "\033[0m");
+  ffStrbufInit (&formatted);
+  appendUnit (&formatted, s / 86400, "day");
+  appendUnit (&formatted, s / 3600 % 24, "hour");
+  appendUnit (&formatted, s / 60 % 60, "min");
+  if (formatted.length == 0)
+    appendUnit (&formatted, s, "sec");
+  ffStrbufInit (&boot);
+  bootUnix = time (NULL) - (time_t) s;
+  strftime (buf, sizeof buf, "%Y-%m-%d %H:%M:%S", localtime (&bootUnix));
+  ffStrbufSetS (&boot, buf);
+  {
+    FFformatarg args[] = {
+      ffArgU ("days", s / 86400),
+      ffArgU ("hours", s / 3600 % 24),
+      ffArgU ("minutes", s / 60 % 60),
+      ffArgU ("seconds", s % 60),
+      ffArgU ("milliseconds", 0),
+      ffArgS ("boot-time", boot.chars),
+      ffArgU ("years", s / (365 * 86400)),
+      ffArgU ("days-of-year", s / 86400 % 365),
+      ffArgD ("years-fraction", (double) s / (365.25 * 86400)),
+      ffArgS ("formatted", formatted.chars),
+    };
+    ffOutput (m, "Uptime", "{formatted}", sizeof args / sizeof args[0], args);
+  }
+  ffStrbufDestroy (&formatted);
+  ffStrbufDestroy (&boot);
 }

@@ -14,6 +14,7 @@ const FFModule ffModules[] = {
   { "Uptime", "Print how long system has been running", ffPrintUptime },
   { "Break", "Print a empty line", ffPrintBreak },
   { "Colors", "Print some colored blocks", ffPrintColors },
+  { "Custom", "Print a custom string, with or without key", ffPrintCustom },
   { "Packages", "List installed package managers and count of installed packages", ffPrintPackages },
   { "Shell", "Print current shell name and version", ffPrintShell },
   { "Terminal", "Print current terminal device, kind and type", ffPrintTerminal },
@@ -32,6 +33,7 @@ const FFModule ffModules[] = {
 
   /* Coming in a later phase (README).  */
   { "CPUUsage", "Print CPU usage", NULL },
+  { "Command", "Run a command and print its output", NULL },
 
   /* fastfetch modules with no OpenVMS equivalent.  */
   { "Display", NULL, NULL }, { "DE", NULL, NULL }, { "WM", NULL, NULL },
@@ -42,6 +44,8 @@ const FFModule ffModules[] = {
   { "Bluetooth", NULL, NULL }, { "Wifi", NULL, NULL }, { "Brightness", NULL, NULL },
   { NULL, NULL, NULL }
 };
+
+const unsigned ffModuleCount = sizeof ffModules / sizeof ffModules[0] - 1;
 
 const FFModule *
 ffModuleFind (const char *name, unsigned n)

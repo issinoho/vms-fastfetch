@@ -1,4 +1,7 @@
-/* hardware.c - CPU, Memory, Swap ("Page file") and Disk modules.  */
+/* hardware.c - CPU, Memory, Swap ("Page file") and Disk modules.
+
+   Argument lists follow fastfetch's, in order; values OpenVMS does not
+   have are empty.  */
 
 #include <string.h>
 
@@ -7,12 +10,17 @@
 #include "fastfetch.h"
 #include "modules/modules.h"
 
+static double
+percent (uint64_t part, uint64_t whole)
+{
+  return whole ? (double) part * 100.0 / (double) whole : 0;
+}
+
 void
-ffPrintCPU (void)
+ffPrintCPU (const FFModuleArgs *m)
 {
   FFCPUResult cpu;
   const char *error;
-  FFstrbuf *line;
 
   memset (&cpu, 0, sizeof cpu);
   ffStrbufInit (&cpu.vendor);
@@ -20,16 +28,28 @@ ffPrintCPU (void)
   ffStrbufInit (&cpu.hypervisor);
   error = ffDetectCPU (&cpu);
   if (error)
-    ffPrintError ("CPU", error);
+    ffOutputError (m, "CPU", error);
   else
     {
+      FFformatarg args[] = {
+        ffArgS ("name", cpu.name.chars),
+        ffArgS ("vendor", cpu.vendor.chars),
+        ffArgU ("cores-physical", 0),
+        ffArgU ("cores-logical", cpu.coresAvailable),
+        ffArgU ("cores-online", cpu.coresActive),
+        ffArgGhz ("freq-base", cpu.ghz),
+        ffArgGhz ("freq-max", cpu.ghz),
+        ffArgS ("temperature", ""),
+        ffArgS ("core-types", ""),
+        ffArgU ("packages", 0),
+        ffArgS ("march", ""),
+        ffArgU ("numa-nodes", 0),
+        ffArgS ("code-name", ""),
+        ffArgS ("technology", ""),
+        ffArgS ("hypervisor", cpu.hypervisor.chars),    /* OpenVMS addition */
+      };
       /* fastfetch's default: "{name} ({cores-online}) @ {freq-max}"  */
-      line = ffPrintKey ("CPU");
-      ffStrbufAppend (line, &cpu.name);
-      if (cpu.coresActive)
-        ffStrbufAppendF (line, " (%u)", cpu.coresActive);
-      if (cpu.ghz > 0)
-        ffStrbufAppendF (line, " @ %.2f GHz", cpu.ghz);
+      ffOutput (m, "CPU", "{1}{?5} ({5}){?}{?7} @ {7}{?}", sizeof args / sizeof args[0], args);
     }
   ffStrbufDestroy (&cpu.vendor);
   ffStrbufDestroy (&cpu.name);
@@ -37,34 +57,50 @@ ffPrintCPU (void)
 }
 
 void
-ffPrintMemory (void)
+ffPrintMemory (const FFModuleArgs *m)
 {
   FFMemoryResult mem;
   const char *error = ffDetectMemory (&mem);
 
   if (error)
-    ffPrintError ("Memory", error);
+    ffOutputError (m, "Memory", error);
   else
-    ffAppendUsage (ffPrintKey ("Memory"), mem.used, mem.total);
+    {
+      FFformatarg args[] = {
+        ffArgSize ("used", mem.used),
+        ffArgSize ("total", mem.total),
+        ffArgPercent ("percentage", percent (mem.used, mem.total)),
+        ffArgS ("percentage-bar", ""),
+      };
+      ffOutput (m, "Memory", "{1} / {2} ({3})", sizeof args / sizeof args[0], args);
+    }
 }
 
 void
-ffPrintSwap (void)
+ffPrintSwap (const FFModuleArgs *m)
 {
   FFSwapResult swap;
   const char *error = ffDetectSwap (&swap);
 
   /* D7: page and swap files together, under the VMS name.  */
   if (error)
-    ffPrintError ("Page file", error);
-  else if (swap.total == 0)
-    ffPrintKV ("Page file", "Disabled");
+    ffOutputError (m, "Page file", error);
   else
-    ffAppendUsage (ffPrintKey ("Page file"), swap.used, swap.total);
+    {
+      FFformatarg args[] = {
+        ffArgSize ("used", swap.used),
+        ffArgSize ("total", swap.total),
+        ffArgPercent ("percentage", percent (swap.used, swap.total)),
+        ffArgS ("percentage-bar", ""),
+        ffArgS ("name", "Page file"),
+      };
+      ffOutput (m, "Page file", swap.total ? "{1} / {2} ({3})" : "Disabled",
+                sizeof args / sizeof args[0], args);
+    }
 }
 
 void
-ffPrintDisk (void)
+ffPrintDisk (const FFModuleArgs *m)
 {
   FFlist disks;
   const char *error;
@@ -73,25 +109,43 @@ ffPrintDisk (void)
   ffListInit (&disks, sizeof (FFDiskResult));
   error = ffDetectDisks (&disks);
   if (error)
-    ffPrintError ("Disk", error);
+    ffOutputError (m, "Disk", error);
   for (i = 0; i < disks.length; i++)
     {
       FFDiskResult *d = ffListGet (&disks, i);
-      FFstrbuf key;
-      FFstrbuf *line;
-
+      const char *name = ffStrbufIsEmpty (&d->label) ? d->device.chars : d->label.chars;
+      FFformatarg args[] = {
+        ffArgSize ("size-used", d->total - d->free),
+        ffArgSize ("size-total", d->total),
+        ffArgPercent ("size-percentage", percent (d->total - d->free, d->total)),
+        ffArgS ("files-used", ""),
+        ffArgS ("files-total", ""),
+        ffArgS ("files-percentage", ""),
+        ffArgB ("is-external", false),
+        ffArgB ("is-hidden", false),
+        ffArgS ("filesystem", d->filesystem.chars),
+        ffArgS ("name", name),
+        ffArgB ("is-readonly", false),
+        ffArgS ("create-time", ""),
+        ffArgS ("size-percentage-bar", ""),
+        ffArgS ("files-percentage-bar", ""),
+        ffArgU ("days", 0),
+        ffArgU ("hours", 0),
+        ffArgU ("minutes", 0),
+        ffArgU ("seconds", 0),
+        ffArgU ("milliseconds", 0),
+        ffArgS ("mountpoint", d->logicalVolume.chars),
+        ffArgS ("mount-from", d->device.chars),
+        ffArgU ("years", 0),
+        ffArgU ("days-of-year", 0),
+        ffArgD ("years-fraction", 0),
+        ffArgSize ("size-free", d->free),
+        ffArgSize ("size-available", d->free),
+      };
       /* fastfetch: "Disk (/): 47.42 GiB / 467.84 GiB (10%) - ext4"; the
          volume label stands in for the mount point.  */
-      ffStrbufInit (&key);
-      ffStrbufAppendF (&key, "Disk (%s)", ffStrbufIsEmpty (&d->label) ? d->device.chars : d->label.chars);
-      line = ffPrintKey (key.chars);
-      ffAppendUsage (line, d->total - d->free, d->total);
-      if (!ffStrbufIsEmpty (&d->filesystem))
-        {
-          ffStrbufAppendS (line, " - ");
-          ffStrbufAppend (line, &d->filesystem);
-        }
-      ffStrbufDestroy (&key);
+      ffOutput (m, "Disk ({name})", "{1} / {2} ({3}){?9} - {9}{?}",
+                sizeof args / sizeof args[0], args);
       ffStrbufDestroy (&d->label);
       ffStrbufDestroy (&d->logicalVolume);
       ffStrbufDestroy (&d->device);

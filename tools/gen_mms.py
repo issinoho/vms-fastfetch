@@ -11,9 +11,9 @@ import pathlib
 import sys
 
 top = pathlib.Path(__file__).resolve().parent.parent
-# src/3rdparty: not linked until the config phase.  cpuid_x86.c: compiled
+# cpuid_x86.c: compiled
 # with clang by BUILD.COM on x86-64 only (D11), linked via ARCH_OBJS.
-EXCLUDE = ("src/3rdparty/", "src/vms/cpuid_x86.c")
+EXCLUDE = ("src/vms/cpuid_x86.c",)
 
 
 def vms_path(rel):
