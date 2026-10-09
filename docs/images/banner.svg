@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="fastfetch for OpenVMS">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#0d1824"/><stop offset="1" stop-color="#16323f"/></linearGradient>
+<linearGradient id="titlebar" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#5a82ad"/><stop offset="1" stop-color="#2d5079"/></linearGradient>
+<radialGradient id="glow" cx="0.45" cy="0.45" r="0.75">
+  <stop offset="0" stop-color="#ffb43d" stop-opacity="0.08"/><stop offset="1" stop-color="#ffb43d" stop-opacity="0"/></radialGradient>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+  <rect width="4" height="1.4" fill="#000" fill-opacity="0.28"/></pattern>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+  <path d="M32,0 H0 V32" stroke="#ffffff" stroke-opacity="0.035" fill="none"/></pattern>
+<filter id="phosphor" x="-5%" y="-20%" width="110%" height="140%">
+  <feGaussianBlur stdDeviation="1.1" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="soft" x="-10%" y="-10%" width="120%" height="130%">
+  <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.45"/></filter>
+</defs>
+<rect width="1280" height="400" fill="url(#bg)"/>
+<rect width="1280" height="400" fill="url(#grid)"/>
+<g filter="url(#soft)">
+<rect x="40" y="36" width="724" height="330" fill="#c4c4c4"/>
+<path d="M40,366 V36 H764" stroke="#f2f2f2" stroke-width="3" fill="none"/>
+<path d="M40,366 H764 V36" stroke="#5e5e5e" stroke-width="3" fill="none"/>
+<rect x="47" y="43" width="710" height="30" fill="url(#titlebar)"/>
+<rect x="50" y="46" width="24" height="24" fill="#c4c4c4"/><path d="M50,70 V46 H74" stroke="#f2f2f2" stroke-width="2" fill="none"/><path d="M50,70 H74 V46" stroke="#5e5e5e" stroke-width="2" fill="none"/>
+<rect x="55" y="56" width="14" height="4" fill="#5e5e5e"/>
+<rect x="702" y="46" width="24" height="24" fill="#c4c4c4"/><path d="M702,70 V46 H726" stroke="#f2f2f2" stroke-width="2" fill="none"/><path d="M702,70 H726 V46" stroke="#5e5e5e" stroke-width="2" fill="none"/>
+<rect x="711" y="56" width="6" height="6" fill="#5e5e5e"/>
+<rect x="729" y="46" width="24" height="24" fill="#c4c4c4"/><path d="M729,70 V46 H753" stroke="#f2f2f2" stroke-width="2" fill="none"/><path d="M729,70 H753 V46" stroke="#5e5e5e" stroke-width="2" fill="none"/>
+<rect x="735" y="51" width="12" height="12" fill="none" stroke="#5e5e5e" stroke-width="2"/>
+<text x="402.0" y="64" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="15" font-weight="bold" fill="#ffffff">DECterm 1:  fastfetch</text>
+<rect x="47" y="78" width="710" height="281" fill="#5e5e5e"/>
+<path d="M47,359 H757 V78" stroke="#f2f2f2" stroke-width="2" fill="none"/>
+<rect x="50" y="81" width="704" height="275" fill="#120c04"/>
+<rect x="50" y="81" width="704" height="275" fill="url(#glow)"/>
+<g font-family="'DejaVu Sans Mono','Liberation Mono','Menlo','Consolas','Courier New',monospace" font-size="13.6" filter="url(#phosphor)">
+<text x="60" y="100.0" xml:space="preserve"><tspan fill="#ffb43d">$ </tspan><tspan fill="#ffb43d" font-weight="bold">fastfetch</tspan></text>
+<text x="60" y="117.6" xml:space="preserve"><tspan fill="#ff6e5e">   ___</tspan></text>
+<text x="297.5" y="117.6" xml:space="preserve"><tspan fill="#ff6e5e" font-weight="bold">SYSTEM</tspan><tspan fill="#efe3cc">@</tspan><tspan fill="#ff6e5e" font-weight="bold">ORION</tspan></text>
+<text x="60" y="135.2" xml:space="preserve"><tspan fill="#ff6e5e">  / _ \ _ __   ___ _ __</tspan></text>
+<text x="297.5" y="135.2" xml:space="preserve"><tspan fill="#efe3cc">------------</tspan></text>
+<text x="60" y="152.8" xml:space="preserve"><tspan fill="#ff6e5e"> | | | | '_ \ / _ \ '_ \</tspan></text>
+<text x="297.5" y="152.8" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">OS</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">OpenVMS V8.4-2L3 IA64</tspan></text>
+<text x="60" y="170.4" xml:space="preserve"><tspan fill="#ff6e5e"> | |_| | |_) |  __/ | | |</tspan></text>
+<text x="297.5" y="170.4" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Host</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">HP rx2660 (1.59GHz/6.0MB)</tspan></text>
+<text x="60" y="188.0" xml:space="preserve"><tspan fill="#ff6e5e">  \___/| .__/ \___|_| |_|</tspan></text>
+<text x="297.5" y="188.0" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Kernel</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">OpenVMS V8.4-2L3</tspan></text>
+<text x="60" y="205.6" xml:space="preserve"><tspan fill="#ff6e5e">       |_|</tspan></text>
+<text x="297.5" y="205.6" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Uptime</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">7 days, 1 hour</tspan></text>
+<text x="60" y="223.2" xml:space="preserve"><tspan fill="#78a8ff"> __     ____  __ ____</tspan></text>
+<text x="297.5" y="223.2" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Packages</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">55 (pcsi)</tspan></text>
+<text x="60" y="240.8" xml:space="preserve"><tspan fill="#78a8ff"> \ \   / /  \/  / ___|</tspan></text>
+<text x="297.5" y="240.8" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Shell</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">DCL</tspan></text>
+<text x="60" y="258.4" xml:space="preserve"><tspan fill="#78a8ff">  \ \ / /| |\/| \___ \</tspan></text>
+<text x="297.5" y="258.4" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">CPU</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">Intel Itanium 2 9000 series (1) @ 1.59 GHz</tspan></text>
+<text x="60" y="276.0" xml:space="preserve"><tspan fill="#78a8ff">   \ V / | |  | |___) |</tspan></text>
+<text x="297.5" y="276.0" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Memory</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">2.38 GiB / 4.00 GiB (</tspan><tspan fill="#ffd75e">60%</tspan><tspan fill="#efe3cc">)</tspan></text>
+<text x="60" y="293.6" xml:space="preserve"><tspan fill="#78a8ff">    \_/  |_|  |_|____/</tspan></text>
+<text x="297.5" y="293.6" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Disk (I64SYS)</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">10.55 GiB / 33.92 GiB (</tspan><tspan fill="#6fdc6f">31%</tspan><tspan fill="#efe3cc">) - ODS-5</tspan></text>
+<text x="297.5" y="311.2" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Queues</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">7 (1 batch, 6 output)</tspan></text>
+<rect x="297.5" y="317.2" width="24.6" height="16.6" fill="#2e2e2e"/>
+<rect x="322.0" y="317.2" width="24.6" height="16.6" fill="#d9443a"/>
+<rect x="346.6" y="317.2" width="24.6" height="16.6" fill="#4cb84c"/>
+<rect x="371.2" y="317.2" width="24.6" height="16.6" fill="#d9b53a"/>
+<rect x="395.7" y="317.2" width="24.6" height="16.6" fill="#3f6fd9"/>
+<rect x="420.3" y="317.2" width="24.6" height="16.6" fill="#b54cb8"/>
+<rect x="444.9" y="317.2" width="24.6" height="16.6" fill="#3ab5b8"/>
+<rect x="469.4" y="317.2" width="24.6" height="16.6" fill="#d6d6d6"/>
+</g>
+<rect x="50" y="81" width="704" height="275" fill="url(#scan)"/>
+</g>
+<g filter="url(#soft)"><g transform="translate(796,52) scale(0.6)"><rect x="14" y="10" width="228" height="196" rx="22" fill="#d9d2bf"/>
+<rect x="14" y="10" width="228" height="196" rx="22" fill="none" stroke="#a69d86" stroke-width="3"/>
+<rect x="30" y="24" width="196" height="160" rx="14" fill="#2a2a26"/>
+<rect x="38" y="31" width="180" height="146" rx="10" fill="#120c04"/>
+<rect x="38" y="31" width="180" height="146" rx="10" fill="url(#glow)"/>
+<g font-family="'DejaVu Sans Mono','Liberation Mono','Menlo','Consolas','Courier New',monospace" filter="url(#phosphor)">
+<text x="58" y="52" font-size="11.5" font-weight="bold" xml:space="preserve" fill="#78a8ff">__     ____  __ ____</text>
+<text x="58" y="65" font-size="11.5" font-weight="bold" xml:space="preserve" fill="#78a8ff">\ \   / /  \/  / ___|</text>
+<text x="58" y="78" font-size="11.5" font-weight="bold" xml:space="preserve" fill="#78a8ff"> \ \ / /| |\/| \___ \</text>
+<text x="58" y="91" font-size="11.5" font-weight="bold" xml:space="preserve" fill="#78a8ff">  \ V / | |  | |___) |</text>
+<text x="58" y="104" font-size="11.5" font-weight="bold" xml:space="preserve" fill="#78a8ff">   \_/  |_|  |_|____/</text>
+<text x="50" y="132" font-size="13" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">OS</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">OpenVMS</tspan></text>
+<text x="50" y="149" font-size="13" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">CPU</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#efe3cc">Itanium</tspan></text>
+<text x="50" y="166" font-size="13" xml:space="preserve"><tspan fill="#78a8ff" font-weight="bold">Mem</tspan><tspan fill="#efe3cc">: </tspan><tspan fill="#ffd75e">60%</tspan></text>
+</g>
+<rect x="38" y="31" width="180" height="146" rx="10" fill="url(#scan)"/>
+<rect x="96" y="188" width="64" height="10" rx="2" fill="#4a463c"/>
+<text x="128" y="196.5" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="8" font-weight="bold" fill="#e9e4d6" letter-spacing="1.5">OpenVMS</text>
+<path d="M78,206 L70,240 H186 L178,206 Z" fill="#c9c1ac"/>
+<rect x="56" y="236" width="144" height="12" rx="5" fill="#b3aa93"/></g></g>
+<text x="972" y="128" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-weight="bold" font-size="52" fill="#ffffff" textLength="262" lengthAdjust="spacingAndGlyphs">fastfetch</text>
+<text x="974" y="172" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="30" fill="#9fd3ff">for OpenVMS</text>
+<g><rect x="812" y="254" width="96" height="46" rx="7" fill="#a69d86"/><rect x="812" y="248" width="96" height="46" rx="7" fill="#d9d2bf"/><rect x="817" y="251" width="86" height="34" rx="5" fill="#f1ecdf"/><text x="860.0" y="274" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="17" font-weight="bold" fill="#3b382f">IA64</text></g>
+<g><rect x="924" y="254" width="96" height="46" rx="7" fill="#a69d86"/><rect x="924" y="248" width="96" height="46" rx="7" fill="#d9d2bf"/><rect x="929" y="251" width="86" height="34" rx="5" fill="#f1ecdf"/><text x="972.0" y="274" text-anchor="middle" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="17" font-weight="bold" fill="#3b382f">x86-64</text></g>
+<text x="812" y="352" font-family="'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif" font-size="16" fill="#8fa6b8">fastfetch 2.70 compatible  ·  JSONC configs  ·  PCSI kits</text>
+</svg>
