@@ -189,15 +189,23 @@ ffPrintLocalIp (const FFModuleArgs *m)
 void
 ffPrintLocale (const FFModuleArgs *m)
 {
-  FFstrbuf locale;
+  FFLocaleResult loc;
 
-  ffStrbufInit (&locale);
-  if (!ffDetectLocale (&locale))
+  ffStrbufInit (&loc.locale);
+  ffStrbufInit (&loc.vmsLanguage);
+  loc.localeSet = false;
+  if (!ffDetectLocale (&loc))
     {
-      FFformatarg args[] = { ffArgS ("result", locale.chars) };
-      ffOutput (m, "Locale", "{1}", 1, args);
+      FFformatarg args[] = {
+        ffArgS ("result", loc.locale.chars),
+        ffArgS ("vms-language", loc.vmsLanguage.chars),    /* OpenVMS addition */
+      };
+      /* With no C library locale chosen the line would only say "C":
+         add VMS's own language, "C (ENGLISH)".  */
+      ffOutput (m, "Locale", loc.localeSet ? "{1}" : "{1}{?2} ({2}){?}", 2, args);
     }
-  ffStrbufDestroy (&locale);
+  ffStrbufDestroy (&loc.locale);
+  ffStrbufDestroy (&loc.vmsLanguage);
 }
 
 static void

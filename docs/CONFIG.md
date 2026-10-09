@@ -104,7 +104,7 @@ Disk and LocalIp print one line per volume or interface. Their keys are formats 
 | Swap ("Page file") | used, total, percentage, percentage-bar, name |
 | Disk | size-used, size-total, size-percentage, files-used, files-total, files-percentage, is-external, is-hidden, filesystem, name (volume label), is-readonly, create-time, …, mountpoint (logical volume), mount-from (device), …, size-free, size-available |
 | LocalIp | ipv4, ipv6, mac, ifname, is-default-route, mtu, speed, flags |
-| Locale | result |
+| Locale | result; + vms-language (SYS$LANGUAGE). With no C library locale set (no LC_ALL, LC_CTYPE or LANG), the line reads `C (ENGLISH)`. |
 | Processes | result, threads; + hidden |
 | Users | name, host-name, session-name, client-ip, login-time; + sessions |
 | DateTime | year, year-short, month, month-pretty, month-name, month-name-short, week, weekday, weekday-short, day-in-year, day-in-month, day-in-week, hour, hour-pretty, hour-12, hour-12-pretty, minute, minute-pretty, second, second-pretty, offset-from-utc, timezone-name, day-pretty, am-pm |

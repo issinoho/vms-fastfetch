@@ -124,6 +124,13 @@ typedef struct FFClusterResult
   uint32_t nodes, votes, quorum;
 } FFClusterResult;
 
+typedef struct FFLocaleResult
+{
+  FFstrbuf locale;              /* LC_ALL / LC_CTYPE / LANG, else the CRTL's ("C") */
+  bool localeSet;               /* a locale other than C/POSIX was chosen */
+  FFstrbuf vmsLanguage;         /* SYS$LANGUAGE, e.g. "ENGLISH" */
+} FFLocaleResult;
+
 typedef struct FFLoadResult
 {
   uint32_t current;             /* RMI$_CUR: running now */
@@ -155,7 +162,7 @@ const char *ffDetectPackages (FFPackagesResult *result);
 const char *ffDetectShell (FFstrbuf *result);
 const char *ffDetectTerminal (FFTerminalResult *result);
 const char *ffDetectProcesses (FFProcessesResult *result);
-const char *ffDetectLocale (FFstrbuf *result);
+const char *ffDetectLocale (FFLocaleResult *result);
 const char *ffDetectCluster (FFClusterResult *result);
 /* Busy percentage of all active CPUs over waitMs milliseconds.  */
 const char *ffDetectCPUUsage (double *percent, uint32_t waitMs);

@@ -71,6 +71,9 @@ addcase command "-s command -l none --command-text \"write sys\$output \"\"hello
 addcase commandnone "-s command -l none --show-errors"
 addcase json5 "-j -s cpuusage:loadavg:dns:queues"
 addcase commandcfg "-c [.tests]command.jsonc"
+addcase localevms "-s locale -l none"
+addcase localelang "-s locale -l none" "define/process lang \"fr_FR.ISO8859-1\""
+addcase localeafter "-s locale -l none" "deassign/process lang"
 
 mkdir -p "$top/out"
 log=$top/out/test-$node.log
@@ -190,6 +193,9 @@ check "command: key on the first"       first command "Command: hello"
 check "command: second line alone"      matches command '^second$'
 check "commandnone: needs text"         has commandnone "No command given"
 check "commandcfg: JSON-escaped DCL"   matches commandcfg '^Booted: +[0-9]+-[A-Z]{3}-[0-9]{4} '
+check "localevms: C with SYS\$LANGUAGE"   matches localevms '^Locale: C \([A-Z]+\)$'
+check "localelang: LANG alone"          matches localelang '^Locale: fr_FR\.ISO8859-1$'
+check "localeafter: back to C"          matches localeafter '^Locale: C \('
 check "json5: typed"                    jsonof json5 'import json,sys; t={e["type"]:e for e in json.load(sys.stdin)}; assert isinstance(t["CPUUsage"]["result"]["avg"], float); assert isinstance(t["Queues"]["result"]["queues"], int); assert t["DNS"]["result"]["result"]; assert isinstance(t["Loadavg"]["result"]["runnable"], int)'
 
 echo "TEST: $pass passed, $fail failed ($node)"

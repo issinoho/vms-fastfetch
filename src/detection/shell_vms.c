@@ -34,19 +34,24 @@ ffDetectShell (FFstrbuf *result)
 }
 
 const char *
-ffDetectLocale (FFstrbuf *result)
+ffDetectLocale (FFLocaleResult *r)
 {
   static const char *vars[] = { "LC_ALL", "LC_CTYPE", "LANG", NULL };
   const char *v;
   int i;
 
+  /* VMS's own language (DCL, messages, LIB$ date formats) is separate
+     from the C library's locale; report it too.  */
+  ffVmsTrnlnm ("SYS$LANGUAGE", &r->vmsLanguage);
   for (i = 0; vars[i]; i++)
     if ((v = getenv (vars[i])) && *v)
       {
-        ffStrbufSetS (result, v);
+        ffStrbufSetS (&r->locale, v);
+        r->localeSet = strcmp (v, "C") != 0 && strcmp (v, "POSIX") != 0;
         return NULL;
       }
   v = setlocale (LC_CTYPE, "");
-  ffStrbufSetS (result, v && *v ? v : "C");
+  ffStrbufSetS (&r->locale, v && *v ? v : "C");
+  r->localeSet = v && *v && strcmp (v, "C") != 0 && strcmp (v, "POSIX") != 0;
   return NULL;
 }
