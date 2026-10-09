@@ -7,6 +7,55 @@
 A [fastfetch](https://github.com/fastfetch-cli/fastfetch)-compatible system information tool for
 OpenVMS (x86-64 and IA64), built natively with VSI C.
 
+## Screenshots
+
+Copied from the terminal; the colours, and the two rows of colour blocks at the end,
+don't survive a copy. Node names and addresses are replaced.
+
+**IA64:** an HP rx2660 running OpenVMS V8.4-2L3
+
+```text
+$ fastfetch
+   ___                       SYSTEM@NODE1
+  / _ \ _ __   ___ _ __      ------------
+ | | | | '_ \ / _ \ '_ \     OS: OpenVMS V8.4-2L3 IA64
+ | |_| | |_) |  __/ | | |    Host: HP rx2660 (1.59GHz/6.0MB)
+  \___/| .__/ \___|_| |_|    Kernel: OpenVMS V8.4-2L3
+       |_|                   Uptime: 7 days, 11 hours, 40 mins
+ __     ____  __ ____        Packages: 56 (pcsi)
+ \ \   / /  \/  / ___|       Shell: DCL
+  \ \ / /| |\/| \___ \       Terminal: FTA966: (pseudo-terminal) VT500 series
+   \ V / | |  | |___) |      CPU: Intel Itanium 2 9000 series (1) @ 1.59 GHz
+    \_/  |_|  |_|____/       Memory: 2.34 GiB / 4.00 GiB (59%)
+                             Page file: 0 B / 4.05 GiB (0%)
+                             Disk (I64SYS): 10.57 GiB / 33.92 GiB (31%) - ODS-5
+                             Local IP (WE1): 10.0.0.5/24
+                             Locale: C (ENGLISH)
+```
+
+**x86-64:** a KVM guest running OpenVMS E9.2-4
+
+```text
+$ fastfetch
+   ___                       SYSTEM@NODE2
+  / _ \ _ __   ___ _ __      ------------
+ | | | | '_ \ / _ \ '_ \     OS: OpenVMS E9.2-4 x86_64
+ | |_| | |_) |  __/ | | |    Host: QEMU Standard PC (Q35 + ICH9, 2009)
+  \___/| .__/ \___|_| |_|    Kernel: OpenVMS E9.2-4
+       |_|                   Uptime: 7 days, 17 hours, 42 mins
+ __     ____  __ ____        Packages: 71 (pcsi)
+ \ \   / /  \/  / ___|       Shell: DCL
+  \ \ / /| |\/| \___ \       Terminal: FTA1944: (pseudo-terminal) VT500 series
+   \ V / | |  | |___) |      CPU: Intel(R) Celeron(R) J4005 (2) @ 2.00 GHz
+    \_/  |_|  |_|____/       Memory: 4.47 GiB / 7.10 GiB (63%)
+                             Page file: 0 B / 472.88 MiB (0%)
+                             Disk (X86SYS): 20.22 GiB / 21.46 GiB (94%) - ODS-5
+                             Disk (TOOLS): 408.37 MiB / 964.12 MiB (42%) - ODS-5
+                             Disk (SYSDUMP): 9.50 GiB / 16.00 GiB (59%) - ODS-5
+                             Local IP (IE0): 10.0.0.6/24
+                             Locale: C (ENGLISH)
+```
+
 ## Install
 
 Download the kit for your platform from the
