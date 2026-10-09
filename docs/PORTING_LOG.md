@@ -45,3 +45,11 @@ One entry per build or run problem, newest last. Triage codes (as in the sibling
 | O | A config warning shared a line with the first banner line on a terminal | `warn()` wrote the prefix, message and newline as three stderr calls, so three records | Format the message first and write it with one call (D3) |
 | O | A blank line before the banner, and a message just before it was overwritten | The `$QIO` NOFORMAT text carried its own CR LF; the driver frames records itself, emitting LF only when the cursor is not on a fresh line | Frame each line with zero-length writes carrying FORTRAN carriage control `$` and `+` (D10, amended) |
 | – | `-s` drops a config's per-module keys and formats | As upstream: `-s` replaces the module list | Documented in CONFIG.md; tests check that the config's display settings still apply |
+
+## Phase 4 (2026-10-09)
+
+| Code | Problem | Root cause | Fix |
+|------|---------|------------|-----|
+| T | The first `kit.sh ia64` failed after a good build | `kit.sh` redirected `build.sh`'s output into `out/build-<node>.log`, which `build.sh` writes and then checks itself; `grep` refused ("input file is also the output") | `kit.sh` discards `build.sh`'s output; the log stays `build.sh`'s |
+| S | Now and then (three times so far, all IA64) `vms.sh` returned an empty log with success: one install check and one test run reported nothing, or 61 failures | The ssh session ended before the procedure started; `vms.sh` gave up without the completion marker and printed nothing | `vms.sh` retries once when no log exists (nothing ran, so a retry is safe), and otherwise fails with "no completion marker"; `installcheck.sh` also reports an empty log |
+| T | clang code must avoid VSI clang's `memset` → `OTS$FILL` miscompile (vms-php) | A family rule | `BUILD.COM` compiles `cpuid_x86.c` with `-fno-builtin-memset` |

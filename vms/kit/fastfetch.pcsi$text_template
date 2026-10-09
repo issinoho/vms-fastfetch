@@ -1,0 +1,18 @@
+=product @PRODUCER@ @BASE@ FASTFETCH @PCSIVERSION@ full
+1 'PRODUCER
+=prompt @PRODUCER@
+1 'PRODUCT
+=prompt vms-fastfetch @VERSION@: a fastfetch-compatible system information tool for OpenVMS
+1 'NOTICE
+=prompt MIT License; follows fastfetch and bundles yyjson (both MIT). See [FASTFETCH.DOC]NOTICE.
+1 RELEASE_NOTES
+=prompt Documentation is in [FASTFETCH.DOC]README.VMS and CONFIG.MD under the installation directory.
+1 POST_INSTALL
+=prompt Post-installation tasks for vms-fastfetch
+    At system startup: to define FASTFETCH$ROOT and FASTFETCH$PRESETS at
+    every boot, add this line to SYS$MANAGER:SYSTARTUP_VMS.COM:
+    $ @SYS$STARTUP:FASTFETCH$STARTUP.COM
+    For each user: to define the FASTFETCH command, add this line to LOGIN.COM:
+    $ @FASTFETCH$ROOT:[000000]FASTFETCH$SETUP.COM
+
+PRODUCT REMOVE FASTFETCH removes the product and deassigns the logical names.

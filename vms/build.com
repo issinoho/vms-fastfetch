@@ -43,7 +43,10 @@ $ write sys$output "CLANG ''cpusrc'"
 $ clang = "$sys$system:clang.exe"
 $ set default [.src.vms]
 $ define/user sys$error sys$output
-$ clang -c -O2 -o cpuid_x86.obj cpuid_x86.c
+$! -fno-builtin-memset: VSI clang lowers memset to OTS$FILL but assumes it
+$! returns its destination, so tail calls return garbage (a family rule,
+$! found in vms-php; this file has no memset, but future edits might).
+$ clang -c -O2 -fno-builtin-memset -o cpuid_x86.obj cpuid_x86.c
 $ cstatus = $status
 $ set default [--]
 $ if .not. cstatus

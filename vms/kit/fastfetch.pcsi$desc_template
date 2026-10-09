@@ -1,0 +1,34 @@
+--
+-- PCSI product description for vms-fastfetch.
+-- Template: MAKE_KIT.COM substitutes @PRODUCER@, @BASE@ and @PCSIVERSION@.
+--
+product @PRODUCER@ @BASE@ FASTFETCH @PCSIVERSION@ full ;
+
+    information RELEASE_NOTES phase after ;
+
+    directory [FASTFETCH] ;
+    directory [FASTFETCH.BIN] ;
+    directory [FASTFETCH.PRESETS] ;
+    directory [FASTFETCH.DOC] ;
+
+    file [FASTFETCH.BIN]FASTFETCH.EXE ;
+    file [FASTFETCH.PRESETS]ALL.JSONC ;
+    file [FASTFETCH.PRESETS]CI.JSONC ;
+    file [SYS$STARTUP]FASTFETCH$STARTUP.COM ;
+    file [FASTFETCH]FASTFETCH$SETUP.COM ;
+    file [FASTFETCH.DOC]README.VMS ;
+    file [FASTFETCH.DOC]CONFIG.MD ;
+    file [FASTFETCH.DOC]LICENSE. ;
+    file [FASTFETCH.DOC]NOTICE. ;
+    file [FASTFETCH.DOC]YYJSON-LICENSE. ;
+
+    -- Define FASTFETCH$ROOT and FASTFETCH$PRESETS now and print the
+    -- post-installation tasks (PCSI shows only the title of an information
+    -- message unless /HELP is given).
+    execute postinstall "@PCSI$DESTINATION:[SYS$STARTUP]FASTFETCH$STARTUP.COM INSTALL" interactive ;
+    -- On removal, deassign them.
+    execute install "CONTINUE" remove "@PCSI$DESTINATION:[SYS$STARTUP]FASTFETCH$STARTUP.COM REMOVE" ;
+
+    information POST_INSTALL phase after ;
+
+end product ;

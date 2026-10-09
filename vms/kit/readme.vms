@@ -1,0 +1,49 @@
+vms-fastfetch for OpenVMS
+=========================
+
+A fastfetch-compatible system information tool: a logo and lines of
+system details (OS, host, CPU, memory, disks, network, packages, ...),
+read from OpenVMS system services.  Runs on OpenVMS x86-64 and IA64.
+
+Setup
+-----
+After PRODUCT INSTALL FASTFETCH:
+
+  At system startup (SYS$MANAGER:SYSTARTUP_VMS.COM):
+    $ @SYS$STARTUP:FASTFETCH$STARTUP.COM
+  For each user (LOGIN.COM, or SYS$MANAGER:SYLOGIN.COM for everyone):
+    $ @FASTFETCH$ROOT:[000000]FASTFETCH$SETUP.COM
+
+Use
+---
+  $ fastfetch                          ! the default banner
+  $ fastfetch -c all                   ! every supported module
+  $ fastfetch -c ci                    ! plain text, for batch logs
+  $ fastfetch -s os:cpu:memory -l none ! chosen modules, no logo
+  $ fastfetch --format json            ! results as JSON
+  $ fastfetch --list-modules
+  $ fastfetch -h
+
+Options are case-insensitive.  Quote format strings to keep their case
+and spaces:
+  $ fastfetch -s disk --disk-format "{size-percentage} {filesystem}"
+
+Configuration
+-------------
+fastfetch's JSONC config format, read from (first found):
+  - the file named by the logical name FASTFETCH$CONFIG
+  - [<login>.^.config.fastfetch]config.jsonc (fastfetch's ~/.config/fastfetch)
+  - SYS$LOGIN:FASTFETCH.JSONC
+"fastfetch --gen-config" writes a starting config to the second location.
+FASTFETCH$ROOT:[DOC]CONFIG.MD lists the keys, options and format arguments.
+
+Terminals
+---------
+Colours are used when SYS$OUTPUT is a terminal; --pipe or the NO_COLOR
+logical name turns them off.  Logos are ASCII, for DECterm and VT terminals.
+
+Licence
+-------
+MIT (FASTFETCH$ROOT:[DOC]LICENSE.).  Design, module names, config format
+and logos follow fastfetch (MIT); yyjson is bundled (MIT); see NOTICE.
+Source: github.com/issinoho/vms-fastfetch

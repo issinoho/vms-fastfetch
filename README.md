@@ -18,7 +18,7 @@ fastfetch reads /proc and sysfs.
 | 1. Core engine + Title/OS/Host/Kernel/Uptime/Colors; `tools/test.sh` 21/21 | done | done |
 | 2. CPU, Memory, Page file, Disk, LocalIp, Packages, Shell, Terminal, Processes, Users, Locale, DateTime, Version, Cluster; `tools/test.sh` 38/38 | done | done |
 | 3. JSONC config, presets, format strings, `--format json`, `--gen-config`; `tools/test.sh` 68/68 | done | done |
-| 4. PCSI kit and release | – | – |
+| 4. PCSI kit `ISSINOHO <base> FASTFETCH V0.1-0` (`tools/kit.sh`); install check: install, smoke 8/8, clean removal (`tools/installcheck.sh`) | done | done |
 
 The probe findings that shape the detection code are in [docs/PROBES.md](docs/PROBES.md).
 
@@ -31,11 +31,15 @@ tools/test.sh <node>                           # regression checks (log-file out
 tools/run.sh <node> [args]                     # run in an interactive terminal session (colours, $QIO)
 python3 tools/gen_logos.py                     # after changing src/logo/ (output committed)
 python3 tools/gen_mms.py                       # after adding/removing sources (output committed)
+tools/kit.sh <node>                            # PCSI kit -> out/kits/ (producer ISSINOHO)
+tools/installcheck.sh <node>                   # install kit, smoke-test, remove (changes the system)
 tools/probe.sh <node>                          # Phase 0 probes -> out/probes-<node>.log
 tools/vms.sh <node> dcl '<cmd>' ...            # run DCL; also put/get/run/batch
 ```
 
-On VMS, define a foreign command and run it:
+Installed from the kit (`PRODUCT INSTALL FASTFETCH`), it is set up with
+`@SYS$STARTUP:FASTFETCH$STARTUP.COM` (at boot) and `@FASTFETCH$ROOT:[000000]FASTFETCH$SETUP.COM`
+(per user); see `vms/kit/readme.vms`.  From a build tree, define a foreign command:
 
 ```
 $ fastfetch :== $DISK$USER:[USERNAME.VMS_FASTFETCH.BIN_X86_64]FASTFETCH.EXE

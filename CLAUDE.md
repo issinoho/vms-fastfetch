@@ -34,6 +34,8 @@ tools/build.sh <ia64|x86> [ALL|CLEAN]   # push + MMS build; fails on %CC-E/F, li
 tools/test.sh <node>                    # regression checks, "TEST: N passed, 0 failed"
 tools/run.sh <node> [args]              # interactive terminal session (colour, $QIO path)
 python3 tools/gen_{logos,mms}.py       # regenerate committed logo_builtin.c / sources.mms
+tools/kit.sh <node>                     # PCSI kit -> out/kits/ (checks kit.env vs FF_PROGRAM_VERSION)
+tools/installcheck.sh <node>            # install, smoke, remove: changes the system; ask first
 tools/probe.sh <ia64|x86>               # push + run [.PROBES]PROBE.COM, log in out/
 tools/push.sh <node>                    # upload src/ vms/ probes/ (changed files; PUSH_ALL=1 for all)
 tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
@@ -43,6 +45,12 @@ tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
 
 - **Use `tools/vms.sh`, never raw `ssh host cmd`.** The exception is `ssh -tt`, which is
   needed to see real terminal behaviour (SYS$OUTPUT = FTAnnn:); wrap it in `timeout`.
+- **`vms.sh` can lose a session (IA64, now and then):** it retries once when nothing ran
+  and fails loudly otherwise.  A test run with almost everything failing at once is this,
+  not a regression: check `out/test-<node>.log` is not empty and rerun.
+- **Bump the version in two places:** `FF_PROGRAM_VERSION` (src/fastfetch.h) and
+  `vms/kit/kit.env`; `tools/kit.sh` refuses a mismatch.
+- **All clang code uses `-fno-builtin-memset`** (VSI clang memset -> OTS$FILL miscompile).
 - **Every message is one write call.** On VMS each stderr/stdout call is a record, so
   build the whole line first (config.c `warn`).
 - **Check terminal framing with raw bytes:** pipe an `ssh -tt` session through `cat -A`

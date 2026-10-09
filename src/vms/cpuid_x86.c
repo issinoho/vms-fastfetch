@@ -4,7 +4,9 @@
    one file is compiled with VSI's clang by BUILD.COM and linked with the
    VSI C objects (DECISIONS.md D11).  The interface is integers and a
    4-word array: a 32-bit VSI C pointer arrives sign-extended, which is a
-   valid 64-bit address.  */
+   valid 64-bit address.  BUILD.COM compiles it with -fno-builtin-memset,
+   as all clang code in the vms-* family (VSI clang's memset -> OTS$FILL
+   miscompile).  */
 
 void
 ffX86Cpuid (unsigned int leaf, unsigned int subleaf, unsigned int *regs)

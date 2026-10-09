@@ -14,7 +14,7 @@ node=${1:?usage: push.sh <node>}
 read -r _ _ HOST PORT USER WORKDIR SFTPDIR < <(awk -v n="$node" '$1==n' "$top/tools/nodes.conf") || true
 [ -n "${HOST:-}" ] || { echo "push: unknown node '$node' (see tools/nodes.conf)" >&2; exit 2; }
 
-dirs=(src vms probes presets tests)
+dirs=(src vms probes presets tests docs LICENSE NOTICE)
 mkdir -p "$top/cache"
 manifest=$top/cache/pushed-$node.sha
 [ "${PUSH_ALL:-}" = 1 ] && rm -f "$manifest"

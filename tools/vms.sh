@@ -70,8 +70,23 @@ dcl_logged() {
     done
     kill "$pid" 2>/dev/null || true; wait "$pid" 2>/dev/null || true
     sftp_batch "cd $SFTPDIR" "-rm $tag.com" "-rm $tag.LOG" "-rm $tag.DONE" || true
+    local rc=0
+    if ! grep -aq '^VMSRUN-END' "$out" 2>/dev/null; then
+        # No log at all: the ssh session ended before the procedure started
+        # (seen now and then on the IA64 node), so nothing ran and a retry is
+        # safe.  A log without the end line: it ran, but did not finish.
+        if [ ! -s "$out" ] && [ -z "${VMS_RETRIED:-}" ]; then
+            echo "vms.sh: $node: the procedure did not start; retrying once" >&2
+            rm -f "$com" "$out" "$done_f"
+            VMS_RETRIED=1 dcl_logged "$@"
+            return
+        fi
+        echo "vms.sh: $node: no completion marker in the log (session ended early or timed out)" >&2
+        rc=1
+    fi
     tr -d '\r' < "$out" | grep -av '^VMSRUN-END' || true
     rm -f "$com" "$out" "$done_f"
+    return $rc
 }
 
 case $op in

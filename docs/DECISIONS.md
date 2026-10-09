@@ -116,7 +116,7 @@ Other `-c` forms:
 Location 2 is built from SYS$LOGIN's translation (`USER$ROOT:[username]` → `USER$ROOT:[username.^.config.fastfetch]`). `SYS$LOGIN:[.x]` is not valid on these nodes, because SYS$LOGIN is a plain directory, not a rooted logical. `--gen-config` creates the directories.
 
 ## D13. Typed module arguments drive both the text and the JSON output
-**Status:** proposed.
+**Status:** approved by the user (2026-10-09).
 
 Each module reports its result once, as a list of named, typed arguments in upstream's order:
 - **Types:** string, count, size, percent, GHz, boolean, plus pre-coloured text.
@@ -126,3 +126,15 @@ Each module reports its result once, as a list of named, typed arguments in upst
 These names are close to, but not guaranteed identical to, upstream's JSON field names. Upstream builds JSON from separate C structures, and its JSON for OpenVMS would not exist anyway. Pre-coloured text (Title's coloured parts) is left out of the JSON.
 
 **Alternative rejected:** a hand-written JSON function per module, mirroring upstream's field names. That doubles each module's code and still differs wherever upstream's structures have no OpenVMS data.
+
+## D14. PCSI product FASTFETCH, logicals FASTFETCH$ROOT and FASTFETCH$PRESETS
+**Status:** proposed.
+
+The kit is `ISSINOHO <base> FASTFETCH V0.1-0`, installed under `[FASTFETCH]` as the sibling kits are:
+- `[.BIN]FASTFETCH.EXE`
+- `[.PRESETS]ALL.JSONC`, `CI.JSONC`
+- `[.DOC]` README.VMS, CONFIG.MD and the licences
+- `[000000]FASTFETCH$SETUP.COM`, which defines the `fastfetch` command
+- `SYS$STARTUP:FASTFETCH$STARTUP.COM`, which defines `FASTFETCH$ROOT` (concealed) and `FASTFETCH$PRESETS`, and deassigns both at `PRODUCT REMOVE`
+
+The product name has no VMS prefix (unlike VMSCURL and VMSMARIADB), because VSI ships no product called FASTFETCH. The PCSI version follows the program: 0.1.0 becomes V0.1-0. `vms/kit/kit.env` holds it, and `tools/kit.sh` refuses to build if it disagrees with `FF_PROGRAM_VERSION`.

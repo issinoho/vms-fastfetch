@@ -16,7 +16,7 @@ $ clang :== $sys$system:clang.exe
 $ define/user sys$error sys$output
 $ clang --version
 $ define/user sys$error sys$output
-$ clang -c -O2 -o cpuid_x86.obj cpuid_x86.c
+$ clang -c -O2 -fno-builtin-memset -o cpuid_x86.obj cpuid_x86.c
 $ write sys$output "--- clang status ", $status
 $ rename cpuid_x86.obj 'obj'
 $ objs = objs + ",''obj'cpuid_x86.obj"
