@@ -66,3 +66,9 @@ One entry per build or run problem, newest last. Triage codes (as in the sibling
 | – | CPU usage scale | `RMI$_CPUIDLE` counts 100 ticks per second per CPU, summed over CPUs (an idle 1-CPU IA64 gained 100 in 1 s) | Usage = 1 - idle / (seconds x 100 x CPUs) |
 | O | `Command` showed an empty first line for `SEARCH/STATISTICS` output | DCL output can start with a blank line, not only with indentation | Trim leading blank lines and blanks |
 | S | Another IA64 run came back with an empty log and no `vms.sh` message; every check then failed | A lost ssh session on a path the new `vms.sh` check does not see | `test.sh` counts the cases' status lines and reruns once if any are missing, else says "session lost" |
+
+## 0.2.1 (2026-10-09)
+
+| Code | Problem | Root cause | Fix |
+|------|---------|------------|-----|
+| S | The IA64 install check for 0.2.1 first installed the 0.2.0 kit | `kit.sh` failed (a lost session left an empty build log), and the previous kit was still in [.KIT_IA64] | `installcheck.sh` requires the installed program to report kit.env's version; rerun `kit.sh` |

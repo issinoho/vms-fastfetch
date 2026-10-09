@@ -10,7 +10,7 @@
 #include "common/strbuf.h"
 #include "logo/logo.h"
 
-#define FF_PROGRAM_VERSION "0.2.0"
+#define FF_PROGRAM_VERSION "0.2.1"
 #define FF_UPSTREAM_VERSION "2.70.0"   /* the fastfetch release we follow */
 
 /* fastfetch's default, minus the modules OpenVMS cannot support, plus Cluster

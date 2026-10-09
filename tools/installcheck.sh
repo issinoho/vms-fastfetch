@@ -20,6 +20,11 @@ if [ ! -s "$top/out/install-$node.txt" ]; then
 fi
 grep -aE 'install status|Installed|startup procedure|vms-fastfetch [0-9]|SMOKE:|SUCREMOVE|remove status|after removal|items found' \
     "$top/out/install-$node.txt"
+# The installed program must be this tree's version: a failed kit.sh once
+# left the previous kit in [.KIT_<arch>], and that was installed instead.
+kitver=$(sed -n 's/^KIT_VERSION=//p' "$top/vms/kit/kit.env")
+grep -q "vms-fastfetch $kitver " "$top/out/install-$node.txt" ||
+    { echo "installcheck: the installed kit is not version $kitver; rerun tools/kit.sh $node" >&2; exit 1; }
 grep -q 'SMOKE: [0-9]* passed, 0 failed' "$top/out/install-$node.txt" &&
     grep -q 'FASTFETCH\$ROOT after removal: \[\]' "$top/out/install-$node.txt" &&
     grep -q 'FASTFETCH\$PRESETS after removal: \[\]' "$top/out/install-$node.txt" &&
