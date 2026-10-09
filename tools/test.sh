@@ -43,7 +43,7 @@ addcase badmodule "-s os:nosuchmodule -l none"
 # Phase 2
 addcase session "-s processes:users:datetime:version -l none"
 addcase cluster "-s cluster -l none"
-addcase planned "-s cpuusage -l none --show-errors"
+addcase planned "-s battery -l none --show-errors"
 # Phase 3
 addcase config "-c [.tests]sample.jsonc --show-errors"
 addcase configunix "-c tests/sample.jsonc -s os -l none"
@@ -62,10 +62,32 @@ addcase genhome "-s os:uptime --gen-config-force" \
     "define/process sys\$login 'hdir'"
 addcase readhome "-l none"
 addcase confignone "-c none -l none -s os" "deassign/process sys\$login"
+# Phase 5
+addcase cpuusage "-s cpuusage -l none"
+addcase loadavg "-s loadavg -l none"
+addcase dns "-s dns -l none"
+addcase queues "-s queues -l none"
+addcase command "-s command -l none --command-text \"write sys\$output \"\"hello\"\" + f\$fao(\"\"!/\"\") + \"\"second\"\"\""
+addcase commandnone "-s command -l none --show-errors"
+addcase json5 "-j -s cpuusage:loadavg:dns:queues"
+addcase commandcfg "-c [.tests]command.jsonc"
 
 mkdir -p "$top/out"
 log=$top/out/test-$node.log
-"$top/tools/vms.sh" "$node" dcl "${cmds[@]}" > "$log"
+# Every case ends with a status line.  A run without all of them lost its
+# ssh session (seen on IA64 now and then, sometimes with an empty log and
+# no message); retry the whole run once rather than report every check
+# as failed.
+ncases=$(printf '%s\n' "${cmds[@]}" | grep -c '^write sys\$output "=== status ')
+for attempt in 1 2; do
+    bash "$top/tools/vms.sh" "$node" dcl "${cmds[@]}" > "$log"
+    [ "$(grep -ac '^=== status ' "$log")" -eq "$ncases" ] && break
+    if [ "$attempt" = 2 ]; then
+        echo "test: $node: the session was lost twice ($(grep -ac '^=== status ' "$log") of $ncases cases ran); rerun" >&2
+        exit 1
+    fi
+    echo "test: $node: the session was lost; running again" >&2
+done
 
 # section <name>: the output of one case (without the marker lines)
 section() { awk -v n="=== $1" '$0==n{on=1; next} /^=== status /{if(on) exit} on' "$log"; }
@@ -86,6 +108,7 @@ ok() { [ "$(status "$1")" = "%X00000001" ]; }
 # Lines in the default run, logo column stripped (it is 29 wide plus padding).
 grepdefault() { section default | sed -E 's/^.{29} *//' | grep -aqE -- "$1"; }
 jsoncheck() { section json | python3 -c "$1"; }
+jsonof() { section "$1" | python3 -c "$2"; }
 
 check "default: title has @"            has default "@"
 check "default: OS line"                has default "OS: OpenVMS "
@@ -125,7 +148,7 @@ check "session: Users"                  has session "Users: "
 check "session: Date & Time"            has session "Date & Time: 20"
 check "session: Version"                has session "Version: vms-fastfetch"
 check "cluster: hidden when standalone" lines cluster 0
-check "planned: not implemented yet"    has planned "CPUUsage: Not implemented yet"
+check "planned: unsupported module"     has planned "Battery: Not supported on this platform"
 
 check "config: success"                 ok config
 check "config: custom key and format"   matches config 'System -> +OpenVMS [EV][0-9.A-Z-]+ on (x86_64|IA64)$'
@@ -157,6 +180,17 @@ check "genhome: wrote [.^.config.fastfetch]" matches genhome 'wrote .*\.\^\.conf
 check "readhome: default config used"   lines readhome 2
 check "readhome: Uptime from config"    matches readhome '^Uptime: '
 check "confignone: ignores configs"     lines confignone 1
+
+check "cpuusage: a percentage"          matches cpuusage '^CPU Usage: [0-9]+%$'
+check "loadavg: runnable now"           matches loadavg '^Load: [0-9]+ runnable now \([0-9]+ running, [0-9]+ waiting\)$'
+check "dns: name servers"               matches dns '^DNS: [0-9.]+'
+check "queues: counts"                  matches queues '^Queues: [0-9]+ \([0-9]+ batch, [0-9]+ output\)'
+check "command: two lines"              lines command 2
+check "command: key on the first"       first command "Command: hello"
+check "command: second line alone"      matches command '^second$'
+check "commandnone: needs text"         has commandnone "No command given"
+check "commandcfg: JSON-escaped DCL"   matches commandcfg '^Booted: +[0-9]+-[A-Z]{3}-[0-9]{4} '
+check "json5: typed"                    jsonof json5 'import json,sys; t={e["type"]:e for e in json.load(sys.stdin)}; assert isinstance(t["CPUUsage"]["result"]["avg"], float); assert isinstance(t["Queues"]["result"]["queues"], int); assert t["DNS"]["result"]["result"]; assert isinstance(t["Loadavg"]["result"]["runnable"], int)'
 
 echo "TEST: $pass passed, $fail failed ($node)"
 [ "$fail" -eq 0 ]

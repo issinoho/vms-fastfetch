@@ -30,10 +30,11 @@ const FFModule ffModules[] = {
   { "DateTime", "Print current date and time", ffPrintDateTime },
   { "Version", "Print Fastfetch version", ffPrintVersion },
   { "Cluster", "Print OpenVMS Cluster membership, nodes and votes (OpenVMS only)", ffPrintCluster },
-
-  /* Coming in a later phase (README).  */
-  { "CPUUsage", "Print CPU usage", NULL },
-  { "Command", "Run a command and print its output", NULL },
+  { "CPUUsage", "Print CPU usage (all CPUs, sampled for waitTime ms)", ffPrintCPUUsage },
+  { "Loadavg", "Print runnable processes now (OpenVMS keeps no load averages)", ffPrintLoadavg },
+  { "DNS", "Print configured DNS servers", ffPrintDNS },
+  { "Command", "Run a DCL command and print its output", ffPrintCommand },
+  { "Queues", "Print batch and output queues and their jobs (OpenVMS only)", ffPrintQueues },
 
   /* fastfetch modules with no OpenVMS equivalent.  */
   { "Display", NULL, NULL }, { "DE", NULL, NULL }, { "WM", NULL, NULL },

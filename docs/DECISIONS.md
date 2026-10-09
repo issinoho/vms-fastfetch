@@ -138,3 +138,13 @@ The kit is `ISSINOHO <base> FASTFETCH V0.1-0`, installed under `[FASTFETCH]` as 
 - `SYS$STARTUP:FASTFETCH$STARTUP.COM`, which defines `FASTFETCH$ROOT` (concealed) and `FASTFETCH$PRESETS`, and deassigns both at `PRODUCT REMOVE`
 
 The product name has no VMS prefix (unlike VMSCURL and VMSMARIADB), because VSI ships no product called FASTFETCH. The PCSI version follows the program: 0.1.0 becomes V0.1-0. `vms/kit/kit.env` holds it, and `tools/kit.sh` refuses to build if it disagrees with `FF_PROGRAM_VERSION`.
+
+## D15. Loadavg shows runnable processes now, not averages
+**Status:** proposed.
+
+OpenVMS keeps no load averages. `$GETRMI` (MONITOR's data) gives instantaneous process-state counts: `RMI$_CUR` (running), `RMI$_COM` (computable, waiting for a CPU) and `RMI$_COMO` (computable but outswapped).
+- **The module:** fastfetch's Loadavg, keyed "Load". It shows `2 runnable now (2 running, 0 waiting)`.
+- **The arguments:** `loadavg1` is the runnable count, so `{1}` formats show a number. `loadavg2` and `loadavg3` stay empty rather than repeating it.
+- **Not in the default layout**, as upstream.
+
+**Alternative rejected:** sampling for a minute to build averages, which is far too slow for a banner.

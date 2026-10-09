@@ -19,7 +19,7 @@ vms-fastfetch reads fastfetch's JSONC configuration format: JSON plus `//` and `
 
 | Preset | What |
 |--------|------|
-| `all` | every module supported on OpenVMS |
+| `all` | every module supported on OpenVMS (CPUUsage adds a 0.2 s sample) |
 | `ci` | no logo, no colours, errors shown: for batch logs and scripts |
 
 ## Keys understood
@@ -58,6 +58,15 @@ Module-specific keys:
 - `title`: `fqdn`.
 - `separator`: `string`, `length`.
 - `colors`: `paddingLeft`.
+- `cpuusage`: `waitTime` (sample length in ms, default 200).
+- `command`: `text`, the DCL command to run. Its output is the value, one line per output line.
+  fastfetch's `shell` option does not apply.
+
+A `command` entry can show anything DCL can (this one is `tests/command.jsonc`):
+
+```jsonc
+{ "type": "command", "key": "Booted", "text": "write sys$output f$getsyi(\"BOOTTIME\")" }
+```
 
 Logo types that draw images (kitty, sixel, chafa, iterm) are not supported; vms-fastfetch warns and uses the builtin logo. Logos are ASCII only, because DECterm and VT terminals are not UTF-8.
 
@@ -101,6 +110,11 @@ Disk and LocalIp print one line per volume or interface. Their keys are formats 
 | DateTime | year, year-short, month, month-pretty, month-name, month-name-short, week, weekday, weekday-short, day-in-year, day-in-month, day-in-week, hour, hour-pretty, hour-12, hour-12-pretty, minute, minute-pretty, second, second-pretty, offset-from-utc, timezone-name, day-pretty, am-pm |
 | Version | project-name, version, version-tweak, build-type, sysname, arch, cmake-built-type, compile-time, compiler, libc |
 | Cluster (OpenVMS only) | member, nodes, votes, quorum |
+| CPUUsage | avg, max, max-index, min, min-index, avg-bar, max-bar, min-bar. All CPUs together, so avg = max = min. |
+| Loadavg ("Load") | loadavg1 (= runnable), loadavg2, loadavg3 (empty); + runnable, current, computable, computable-outswapped. Instantaneous: OpenVMS keeps no load averages (D15). |
+| DNS | result (servers); + domain |
+| Command | result |
+| Queues (OpenVMS only) | queues, batch, output, generic, stopped, jobs, executing, pending, holding, timed |
 
 ## Command line
 
@@ -109,6 +123,7 @@ Disk and LocalIp print one line per volume or interface. Their keys are formats 
 - `-j`/`--json`/`--format json`, `--pipe`, `--show-errors`, `--separator`, `--key-width`
 - `--color`, `--color-keys`, `--color-title`, `--color-output`
 - `--size-binary-prefix`, `--size-ndigits`
+- `--command-text` (the Command module's DCL)
 - per module: `--<module>-key`, `--<module>-format`, `--<module>-key-color`, `--<module>-output-color`
 - `--gen-config[-force]`, `--list-modules`, `--list-logos`
 

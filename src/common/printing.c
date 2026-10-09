@@ -182,13 +182,33 @@ ffOutput (const FFModuleArgs *m, const char *defaultKey, const char *defaultForm
       jsonResult (n, args);
       return;
     }
-  line = newLine ();
-  if (keyFormat && *keyFormat)
-    appendKey (line, m, keyFormat, n, args);
-  ffAppendColor (line, outColor);
-  ffFormatApply (line, m && m->format ? m->format : defaultFormat, n, args);
-  if (outColor && *outColor)
-    ffAppendReset (line);
+  {
+    /* A value with newlines (Command output) continues on lines of its own
+       beside the logo; the key goes only on the first.  */
+    FFstrbuf value;
+    const char *p, *nl;
+
+    ffStrbufInit (&value);
+    ffFormatApply (&value, m && m->format ? m->format : defaultFormat, n, args);
+    p = value.chars;
+    line = newLine ();
+    if (keyFormat && *keyFormat)
+      appendKey (line, m, keyFormat, n, args);
+    for (;;)
+      {
+        nl = strchr (p, '\n');
+        ffAppendColor (line, outColor);
+        ffStrbufAppendNS (line, nl ? (uint32_t) (nl - p) : (uint32_t) strlen (p), p);
+        ffStrbufTrimRight (line, '\r');
+        if (outColor && *outColor)
+          ffAppendReset (line);
+        if (!nl)
+          break;
+        p = nl + 1;
+        line = newLine ();      /* earlier line pointers are not used again */
+      }
+    ffStrbufDestroy (&value);
+  }
 }
 
 void

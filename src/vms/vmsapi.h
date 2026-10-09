@@ -37,6 +37,12 @@ int ffVmsGetTime (uint64_t *out);
 bool ffVmsTermOpen (void);
 bool ffVmsTermWrite (const char *buf, uint32_t len);
 
+/* Run one DCL command in a subprocess (LIB$SPAWN, no symbols or keypad
+   copied) with its output to a scratch file, and return that output.
+   *completion gets the command's final status.  NULL on success, or an
+   error string.  Takes 0.1-0.5 s, mostly creating the subprocess.  */
+const char *ffVmsSpawnCapture (const char *command, FFstrbuf *output, uint32_t *completion);
+
 /* Translate a logical name (any table, as F$TRNLNM with default tables).  */
 bool ffVmsTrnlnm (const char *name, FFstrbuf *out);
 

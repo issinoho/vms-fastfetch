@@ -21,6 +21,8 @@ Use
   $ fastfetch -c ci                    ! plain text, for batch logs
   $ fastfetch -s os:cpu:memory -l none ! chosen modules, no logo
   $ fastfetch --format json            ! results as JSON
+  $ fastfetch -s cpuusage:queues:dns    ! more modules: see --list-modules
+  $ fastfetch -s command --command-text "show time"
   $ fastfetch --list-modules
   $ fastfetch -h
 

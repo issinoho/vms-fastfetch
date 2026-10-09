@@ -19,6 +19,7 @@ fastfetch reads /proc and sysfs.
 | 2. CPU, Memory, Page file, Disk, LocalIp, Packages, Shell, Terminal, Processes, Users, Locale, DateTime, Version, Cluster; `tools/test.sh` 38/38 | done | done |
 | 3. JSONC config, presets, format strings, `--format json`, `--gen-config`; `tools/test.sh` 68/68 | done | done |
 | 4. PCSI kit `ISSINOHO <base> FASTFETCH V0.1-0` (`tools/kit.sh`); install check: install, smoke 8/8, clean removal (`tools/installcheck.sh`) | done | done |
+| 5. CPUUsage, Loadavg (instantaneous), DNS, Command (DCL), Queues; kit V0.2-0 install-checked; `tools/test.sh` 78/78 | done | done |
 
 The probe findings that shape the detection code are in [docs/PROBES.md](docs/PROBES.md).
 

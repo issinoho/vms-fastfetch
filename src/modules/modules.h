@@ -64,6 +64,11 @@ void ffPrintUsers (const FFModuleArgs *args);
 void ffPrintDateTime (const FFModuleArgs *args);
 void ffPrintVersion (const FFModuleArgs *args);
 void ffPrintCluster (const FFModuleArgs *args);
+void ffPrintCPUUsage (const FFModuleArgs *args);
+void ffPrintLoadavg (const FFModuleArgs *args);
+void ffPrintDNS (const FFModuleArgs *args);
+void ffPrintCommand (const FFModuleArgs *args);
+void ffPrintQueues (const FFModuleArgs *args);
 
 /* Title text as printed (no colours): shared with Separator.  */
 void ffTitleText (FFstrbuf *out);

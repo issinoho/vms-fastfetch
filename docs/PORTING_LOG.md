@@ -54,3 +54,15 @@ One entry per build or run problem, newest last. Triage codes (as in the sibling
 | S | Now and then (three times so far, all IA64) `vms.sh` returned an empty log with success: one install check and one test run reported nothing, or 61 failures | The ssh session ended before the procedure started; `vms.sh` gave up without the completion marker and printed nothing | `vms.sh` retries once when no log exists (nothing ran, so a retry is safe), and otherwise fails with "no completion marker"; `installcheck.sh` also reports an empty log |
 | T | clang code must avoid VSI clang's `memset` → `OTS$FILL` miscompile (vms-php) | A family rule | `BUILD.COM` compiles `cpuid_x86.c` with `-fno-builtin-memset` |
 | T | Does `crtl_init.c`'s `LIB$INITIALIZE` entry run? With VSI clang on x86 it never does (vms-php) | Not affected: it is compiled with VSI C (`#pragma extern_model`) | Verified on both nodes: under `PARSE_STYLE=EXTENDED`, unquoted `--os-format ABC{name}` keeps `ABC`, which only happens if `DECC$ARGV_PARSE_STYLE` was set; under traditional parsing it is `abc` |
+
+## Phase 5 (2026-10-09)
+
+| Code | Problem | Root cause | Fix |
+|------|---------|------------|-----|
+| L | `RMI$_COM`, `COMO`, `CUR`, `PROCS` gave SS$_BADPARAM in Phase 0 | The process-state items need a 4-byte buffer exactly; Phase 0 asked with 8 (probes/probe_rmi2.c) | `rmi32()` in cpuusage_vms.c |
+| L | Queues failed with `%X000081AA` (no message text) after counting every queue | `$GETQUI`'s IOSB status is a longword; read as a word (as for `$GETSYI`), `JBC$_NOMOREQUE` lost its facility bits and looked like an error | Longword IOSB |
+| L | Generic printer and server queues were not counted as output | They carry neither the PRINTER nor the SERVER flag (generic batch queues do carry BATCH) | Output = every non-batch queue |
+| H | `queues_vms.c` failed to compile on VMS only (implicit `FF_VMS_OK`) | The VMS-only code missed `vmsapi.h`; the host build compiles that part out | Include it; host builds cannot replace VMS builds |
+| – | CPU usage scale | `RMI$_CPUIDLE` counts 100 ticks per second per CPU, summed over CPUs (an idle 1-CPU IA64 gained 100 in 1 s) | Usage = 1 - idle / (seconds x 100 x CPUs) |
+| O | `Command` showed an empty first line for `SEARCH/STATISTICS` output | DCL output can start with a blank line, not only with indentation | Trim leading blank lines and blanks |
+| S | Another IA64 run came back with an empty log and no `vms.sh` message; every check then failed | A lost ssh session on a path the new `vms.sh` check does not see | `test.sh` counts the cases' status lines and reruns once if any are missing, else says "session lost" |

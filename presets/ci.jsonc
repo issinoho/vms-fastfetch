@@ -20,6 +20,8 @@
         "swap",
         "disk",
         "localip",
+        "dns",
+        "queues",
         "locale",
         "processes",
         "users",

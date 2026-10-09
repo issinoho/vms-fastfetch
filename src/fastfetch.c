@@ -80,6 +80,7 @@ printHelp (void)
           "      --color <color>         colour of keys and title (e.g. blue, bold_red, 38;5;208)\n"
           "      --color-keys/--color-title/--color-output <color>\n"
           "      --size-binary-prefix <iec|si|jedec>, --size-ndigits <n>\n"
+          "      --command-text <dcl>    the DCL command the Command module runs\n"
           "      --<module>-key <str>, --<module>-format <str>,\n"
           "      --<module>-key-color <color>, --<module>-output-color <color>\n"
           "      --list-modules          list modules\n"
@@ -300,6 +301,8 @@ parseArgs (int argc, char **argv)
         }
       else if (ieq (a, "--size-ndigits"))
         o->sizeDigits = numArg (argc, argv, &i);
+      else if (ieq (a, "--command-text"))
+        o->commandText = valueArg (argc, argv, &i);
       else if (!moduleArg (argc, argv, &i))
         {
           fprintf (stderr, "fastfetch: unknown option \"%s\" (see --help)\n", a);

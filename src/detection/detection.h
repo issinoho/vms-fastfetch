@@ -124,6 +124,19 @@ typedef struct FFClusterResult
   uint32_t nodes, votes, quorum;
 } FFClusterResult;
 
+typedef struct FFLoadResult
+{
+  uint32_t current;             /* RMI$_CUR: running now */
+  uint32_t computable;          /* RMI$_COM: waiting for a CPU */
+  uint32_t computableOut;       /* RMI$_COMO: computable but outswapped */
+} FFLoadResult;
+
+typedef struct FFQueuesResult
+{
+  uint32_t queues, batch, output, generic, stopped;
+  uint32_t executing, pending, holding, timed;
+} FFQueuesResult;
+
 /* Detected once, shared by the modules that need them.  */
 const FFPlatformResult *ffDetectPlatform (void);
 const FFOSResult *ffDetectOS (void);
@@ -144,5 +157,11 @@ const char *ffDetectTerminal (FFTerminalResult *result);
 const char *ffDetectProcesses (FFProcessesResult *result);
 const char *ffDetectLocale (FFstrbuf *result);
 const char *ffDetectCluster (FFClusterResult *result);
+/* Busy percentage of all active CPUs over waitMs milliseconds.  */
+const char *ffDetectCPUUsage (double *percent, uint32_t waitMs);
+const char *ffDetectLoad (FFLoadResult *result);
+/* servers: "10.0.0.1, 10.0.0.2"; domain: the resolver's default domain.  */
+const char *ffDetectDNS (FFstrbuf *servers, FFstrbuf *domain);
+const char *ffDetectQueues (FFQueuesResult *result);
 
 #endif

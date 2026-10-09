@@ -10,7 +10,9 @@ OBJS = $(OBJ)yyjson.OBJ, -
 	$(OBJ)strbuf.OBJ, -
 	$(OBJ)cluster_vms.OBJ, -
 	$(OBJ)cpu_vms.OBJ, -
+	$(OBJ)cpuusage_vms.OBJ, -
 	$(OBJ)disk_vms.OBJ, -
+	$(OBJ)dns_vms.OBJ, -
 	$(OBJ)host_vms.OBJ, -
 	$(OBJ)kernel_vms.OBJ, -
 	$(OBJ)localip_vms.OBJ, -
@@ -18,18 +20,21 @@ OBJS = $(OBJ)yyjson.OBJ, -
 	$(OBJ)packages_vms.OBJ, -
 	$(OBJ)platform_vms.OBJ, -
 	$(OBJ)processes_vms.OBJ, -
+	$(OBJ)queues_vms.OBJ, -
 	$(OBJ)shell_vms.OBJ, -
 	$(OBJ)terminal_vms.OBJ, -
 	$(OBJ)uptime_vms.OBJ, -
 	$(OBJ)fastfetch.OBJ, -
 	$(OBJ)logo.OBJ, -
 	$(OBJ)logo_builtin.OBJ, -
+	$(OBJ)extras.OBJ, -
 	$(OBJ)hardware.OBJ, -
 	$(OBJ)modules.OBJ, -
 	$(OBJ)session.OBJ, -
 	$(OBJ)system.OBJ, -
 	$(OBJ)title.OBJ, -
 	$(OBJ)crtl_init.OBJ, -
+	$(OBJ)spawn.OBJ, -
 	$(OBJ)vmsapi.OBJ
 
 HDRS = [.src.3rdparty.yyjson]yyjson.h, -
@@ -68,8 +73,14 @@ $(OBJ)cluster_vms.OBJ : [.src.detection]cluster_vms.c $(HDRS)
 $(OBJ)cpu_vms.OBJ : [.src.detection]cpu_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]cpu_vms.c
 
+$(OBJ)cpuusage_vms.OBJ : [.src.detection]cpuusage_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]cpuusage_vms.c
+
 $(OBJ)disk_vms.OBJ : [.src.detection]disk_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]disk_vms.c
+
+$(OBJ)dns_vms.OBJ : [.src.detection]dns_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]dns_vms.c
 
 $(OBJ)host_vms.OBJ : [.src.detection]host_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]host_vms.c
@@ -92,6 +103,9 @@ $(OBJ)platform_vms.OBJ : [.src.detection]platform_vms.c $(HDRS)
 $(OBJ)processes_vms.OBJ : [.src.detection]processes_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]processes_vms.c
 
+$(OBJ)queues_vms.OBJ : [.src.detection]queues_vms.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]queues_vms.c
+
 $(OBJ)shell_vms.OBJ : [.src.detection]shell_vms.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.detection]shell_vms.c
 
@@ -110,6 +124,9 @@ $(OBJ)logo.OBJ : [.src.logo]logo.c $(HDRS)
 $(OBJ)logo_builtin.OBJ : [.src.logo]logo_builtin.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.logo]logo_builtin.c
 
+$(OBJ)extras.OBJ : [.src.modules]extras.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]extras.c
+
 $(OBJ)hardware.OBJ : [.src.modules]hardware.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.modules]hardware.c
 
@@ -127,6 +144,9 @@ $(OBJ)title.OBJ : [.src.modules]title.c $(HDRS)
 
 $(OBJ)crtl_init.OBJ : [.src.vms]crtl_init.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.vms]crtl_init.c
+
+$(OBJ)spawn.OBJ : [.src.vms]spawn.c $(HDRS)
+	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.vms]spawn.c
 
 $(OBJ)vmsapi.OBJ : [.src.vms]vmsapi.c $(HDRS)
 	$(CC) $(CFLAGS)/OBJECT=$(MMS$TARGET) [.src.vms]vmsapi.c

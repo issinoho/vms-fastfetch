@@ -10,7 +10,7 @@
 #include "common/strbuf.h"
 #include "logo/logo.h"
 
-#define FF_PROGRAM_VERSION "0.1.0"
+#define FF_PROGRAM_VERSION "0.2.0"
 #define FF_UPSTREAM_VERSION "2.70.0"   /* the fastfetch release we follow */
 
 /* fastfetch's default, minus the modules OpenVMS cannot support, plus Cluster
@@ -42,6 +42,7 @@ typedef struct FFOptions
   uint32_t sizeDigits;
   uint32_t percentGreen;        /* below: green */
   uint32_t percentYellow;       /* below: yellow; above: red */
+  const char *commandText;      /* --command-text: the Command module's DCL */
   const char *genConfig;        /* --gen-config path ("" = default) or NULL */
   bool genConfigForce;
 } FFOptions;

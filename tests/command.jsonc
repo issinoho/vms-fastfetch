@@ -1,0 +1,7 @@
+// The Command module from a config: DCL with quotes, escaped as JSON.
+{
+    "logo": "none",
+    "modules": [
+        { "type": "command", "key": "Booted", "text": "write sys$output f$getsyi(\"BOOTTIME\")" }
+    ]
+}
