@@ -128,7 +128,7 @@ These names are close to, but not guaranteed identical to, upstream's JSON field
 **Alternative rejected:** a hand-written JSON function per module, mirroring upstream's field names. That doubles each module's code and still differs wherever upstream's structures have no OpenVMS data.
 
 ## D14. PCSI product FASTFETCH, logicals FASTFETCH$ROOT and FASTFETCH$PRESETS
-**Status:** proposed.
+**Status:** approved by the user (2026-10-09).
 
 The kit is `ISSINOHO <base> FASTFETCH V0.1-0`, installed under `[FASTFETCH]` as the sibling kits are:
 - `[.BIN]FASTFETCH.EXE`
